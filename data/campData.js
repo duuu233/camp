@@ -1,12 +1,16 @@
-export function staticAsset(fileName) {
-  return `/static/${fileName}`
+export const cloudEnvId = 'cloudbase-d3gh9k47wa7fbd8bd'
+export const cloudStoragePrefix =
+  'cloud://cloudbase-d3gh9k47wa7fbd8bd.636c-cloudbase-d3gh9k47wa7fbd8bd-1433444569/'
+
+export function cloudAsset(fileName) {
+  return `${cloudStoragePrefix}${fileName}`
 }
 
 export const brand = {
   name: '暮山川',
   tagline: '露营租赁 · 活动策划',
   city: '南宁市',
-  logo: staticAsset('LOGO.png')
+  logo: cloudAsset('LOGO.png')
 }
 
 export const hero = {
@@ -14,7 +18,7 @@ export const hero = {
   title: '把户外 BBQ 的氛围感，交给暮山川',
   subtitle:
     '烧烤炉、天幕桌椅、露营灯、燃气和聚会套餐一次配齐，适合闺蜜小聚、情侣约会、家庭露营和公司团建。',
-  poster: staticAsset('package-4p.png'),
+  poster: cloudAsset('package-4p.png'),
   chips: ['自驾可取', '同城配送', '套餐齐全']
 }
 
@@ -35,7 +39,7 @@ export const bbqPackages = [
     scene: '情侣约会 / 闺蜜小聚',
     price: '¥58/日',
     longRent: '长租低至 ¥48/天',
-    image: staticAsset('package-2p.png'),
+    image: cloudAsset('package-2p.png'),
     features: ['天幕', '桌椅', '卡式炉', '烤盘', '露营灯', '燃气']
   },
   {
@@ -46,7 +50,7 @@ export const bbqPackages = [
     scene: '好友聚会 / 周末露营',
     price: '¥68/日',
     longRent: '长租低至 ¥58/天',
-    image: staticAsset('package-4p.png'),
+    image: cloudAsset('package-4p.png'),
     features: ['大天幕', '四椅', '蛋卷桌', '炉具', '烤盘', '燃气']
   },
   {
@@ -57,7 +61,7 @@ export const bbqPackages = [
     scene: '下午茶 / 麻将 / 烧烤',
     price: '看海报报价',
     longRent: '桌椅炉具与麻将桌组合',
-    image: staticAsset('package-4p-mahjong.png'),
+    image: cloudAsset('package-4p-mahjong.png'),
     features: ['麻将桌', '烧烤炉', '天幕', '桌椅', '露营灯']
   },
   {
@@ -68,7 +72,7 @@ export const bbqPackages = [
     scene: '生日派对 / 好友局',
     price: '看海报报价',
     longRent: '适合半日到整日活动',
-    image: staticAsset('package-6p.png'),
+    image: cloudAsset('package-6p.png'),
     features: ['多人桌椅', '烧烤套装', '氛围灯', '燃气', '收纳箱']
   },
   {
@@ -79,7 +83,7 @@ export const bbqPackages = [
     scene: '小型团建 / 家庭聚会',
     price: '看海报报价',
     longRent: '可加配食材与活动物料',
-    image: staticAsset('package-8p.png'),
+    image: cloudAsset('package-8p.png'),
     features: ['大天幕', '多人桌椅', '烧烤炉', '照明', '燃气']
   },
   {
@@ -90,7 +94,7 @@ export const bbqPackages = [
     scene: '部门聚会 / 露营派对',
     price: '看海报报价',
     longRent: '多人活动推荐',
-    image: staticAsset('package-10p.png'),
+    image: cloudAsset('package-10p.png'),
     features: ['天幕组', '多套桌椅', '炉具', '灯具', '活动箱']
   },
   {
@@ -101,7 +105,7 @@ export const bbqPackages = [
     scene: '公司团建 / 户外活动',
     price: '看海报报价',
     longRent: '支持活动策划加配',
-    image: staticAsset('package-15p.png'),
+    image: cloudAsset('package-15p.png'),
     features: ['多人装备', '场景搭建', '烧烤设备', '氛围照明']
   }
 ]

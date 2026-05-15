@@ -3,6 +3,7 @@ import CampTabBar from '../../components/CampTabBar.vue'
 import CustomerServiceButton from '../../components/CustomerServiceButton.vue'
 import PackagePosterCard from '../../components/PackagePosterCard.vue'
 import SectionTitle from '../../components/SectionTitle.vue'
+import { useCloudImageUrl } from '../../composables/useCloudImageUrl.js'
 import {
   bbqPackages,
   brand,
@@ -12,6 +13,8 @@ import {
 } from '../../data/campData.js'
 
 const featuredPackages = bbqPackages.slice(0, 4)
+const logoImage = useCloudImageUrl(() => brand.logo)
+const heroPoster = useCloudImageUrl(() => hero.poster)
 
 function goPackages() {
   uni.reLaunch({
@@ -34,7 +37,7 @@ function showToast(title) {
     <view class="topbar">
       <view class="brand-lockup">
         <view class="brand-title-row">
-          <image class="brand-mark" :src="brand.logo" mode="aspectFit" />
+          <image class="brand-mark" :src="logoImage" mode="aspectFit" />
           <text class="brand-name">{{ brand.name }}</text>
         </view>
         <text class="brand-tagline">{{ brand.tagline }}</text>
@@ -49,10 +52,10 @@ function showToast(title) {
     </view>
 
     <view class="hero-card">
-      <image class="hero-bg" :src="hero.poster" mode="aspectFill" />
+      <image class="hero-bg" :src="heroPoster" mode="aspectFill" />
       <view class="hero-mask"></view>
       <view class="hero-content">
-        <image class="hero-logo" :src="brand.logo" mode="aspectFit" />
+        <image class="hero-logo" :src="logoImage" mode="aspectFit" />
         <text class="hero-eyebrow">{{ hero.eyebrow }}</text>
         <text class="hero-title">{{ hero.title }}</text>
         <text class="hero-subtitle">{{ hero.subtitle }}</text>

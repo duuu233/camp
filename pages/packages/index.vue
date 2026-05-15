@@ -3,9 +3,11 @@ import { computed, shallowRef } from 'vue'
 import CampTabBar from '../../components/CampTabBar.vue'
 import CustomerServiceButton from '../../components/CustomerServiceButton.vue'
 import PackagePosterCard from '../../components/PackagePosterCard.vue'
+import { useCloudImageUrl } from '../../composables/useCloudImageUrl.js'
 import { bbqPackages, brand, packageGroups } from '../../data/campData.js'
 
 const activeGroup = shallowRef('all')
+const logoImage = useCloudImageUrl(() => brand.logo)
 
 const visiblePackages = computed(() => {
   if (activeGroup.value === 'all') {
@@ -27,7 +29,7 @@ function setGroup(groupId) {
     <view class="page-head">
       <view class="head-copy">
         <view class="head-brand">
-          <image class="head-logo" :src="brand.logo" mode="aspectFit" />
+          <image class="head-logo" :src="logoImage" mode="aspectFit" />
           <text class="head-brand-name">{{ brand.name }}</text>
         </view>
         <text class="head-title">BBQ 套餐</text>

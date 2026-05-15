@@ -1,4 +1,7 @@
 <script setup>
+import { brand } from '../data/campData.js'
+import { useCloudImageUrl } from '../composables/useCloudImageUrl.js'
+
 const props = defineProps({
   item: {
     type: Object,
@@ -11,12 +14,13 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['contact'])
-const messageImage = '/static/LOGO.png'
+const posterImage = useCloudImageUrl(() => props.item.image)
+const messageImage = useCloudImageUrl(() => brand.logo)
 </script>
 
 <template>
   <view class="package-card" :class="{ 'package-card--compact': compact }">
-    <image class="package-poster" :src="item.image" mode="aspectFit" />
+    <image class="package-poster" :src="posterImage" mode="aspectFit" />
     <view class="package-info">
       <view class="package-head">
         <view class="package-copy">

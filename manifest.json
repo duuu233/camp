@@ -54,7 +54,6 @@
         "setting" : {
             "urlCheck" : true
         },
-        "cloudfunctionRoot" : "cloudfunctions/",
         "usingComponents" : true
     },
     "mp-alipay" : {

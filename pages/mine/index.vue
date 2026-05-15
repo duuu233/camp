@@ -2,9 +2,11 @@
 import { shallowRef } from 'vue'
 import CampTabBar from '../../components/CampTabBar.vue'
 import CustomerServiceButton from '../../components/CustomerServiceButton.vue'
+import { useCloudImageUrl } from '../../composables/useCloudImageUrl.js'
 import { brand, profileGroups } from '../../data/campData.js'
 
 const user = shallowRef(null)
+const logoSrc = useCloudImageUrl(() => brand.logo)
 
 function loginWithWechat() {
   if (uni.getUserProfile) {
@@ -51,7 +53,7 @@ function showReservedToast() {
 
     <view class="profile-card">
       <view class="logo-orbit">
-        <image class="logo-mark" :src="brand.logo" mode="aspectFit" />
+        <image class="logo-mark" :src="logoSrc" mode="aspectFit" />
       </view>
       <view class="profile-body">
         <view class="avatar-wrap">
