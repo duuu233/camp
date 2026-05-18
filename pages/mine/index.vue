@@ -2,11 +2,20 @@
 import { shallowRef } from 'vue'
 import CampTabBar from '../../components/CampTabBar.vue'
 import CustomerServiceButton from '../../components/CustomerServiceButton.vue'
-import { useCloudImageUrl } from '../../composables/useCloudImageUrl.js'
+import {
+  logImageRenderEvent,
+  useCapsuleSafeArea,
+  useCloudImageUrl
+} from '../../composables/useCloudImageUrl.js'
 import { brand, profileGroups } from '../../data/campData.js'
 
 const user = shallowRef(null)
-const logoSrc = useCloudImageUrl(() => brand.logo)
+const capsuleSafeAreaStyle = useCapsuleSafeArea()
+const logoSrc = useCloudImageUrl(() => brand.logos.white)
+
+function logMineImageEvent(scope, rawSrc, resolvedSrc, event) {
+  logImageRenderEvent(`Mine:${scope}`, rawSrc, resolvedSrc, event)
+}
 
 function loginWithWechat() {
   if (uni.getUserProfile) {
@@ -48,12 +57,18 @@ function showReservedToast() {
 </script>
 
 <template>
-  <view class="page">
+  <view class="page" :style="capsuleSafeAreaStyle">
     <view class="status-space"></view>
 
     <view class="profile-card">
       <view class="logo-orbit">
-        <image class="logo-mark" :src="logoSrc" mode="aspectFit" />
+        <image
+          class="logo-mark"
+          :src="logoSrc"
+          mode="aspectFit"
+          @load="logMineImageEvent('logo-mark', brand.logos.white, logoSrc, $event)"
+          @error="logMineImageEvent('logo-mark', brand.logos.white, logoSrc, $event)"
+        />
       </view>
       <view class="profile-body">
         <view class="avatar-wrap">
@@ -62,6 +77,8 @@ function showReservedToast() {
             class="avatar-img"
             :src="user.avatar"
             mode="aspectFill"
+            @load="logMineImageEvent('avatar', user.avatar, user.avatar, $event)"
+            @error="logMineImageEvent('avatar', user.avatar, user.avatar, $event)"
           />
           <text v-else class="avatar-text">暮</text>
         </view>
@@ -117,6 +134,7 @@ function showReservedToast() {
 <style scoped>
 .page {
   min-height: 100vh;
+  overflow-x: hidden;
   padding: 0 30rpx calc(150rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(
@@ -135,7 +153,7 @@ function showReservedToast() {
 
 .profile-card {
   position: relative;
-  margin-top: 28rpx;
+  margin-top: var(--capsule-block-offset);
   overflow: hidden;
   border-radius: 40rpx;
   background:

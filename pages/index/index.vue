@@ -3,7 +3,11 @@ import CampTabBar from '../../components/CampTabBar.vue'
 import CustomerServiceButton from '../../components/CustomerServiceButton.vue'
 import PackagePosterCard from '../../components/PackagePosterCard.vue'
 import SectionTitle from '../../components/SectionTitle.vue'
-import { useCloudImageUrl } from '../../composables/useCloudImageUrl.js'
+import {
+  logImageRenderEvent,
+  useCapsuleSafeArea,
+  useCloudImageUrl
+} from '../../composables/useCloudImageUrl.js'
 import {
   bbqPackages,
   brand,
@@ -13,8 +17,14 @@ import {
 } from '../../data/campData.js'
 
 const featuredPackages = bbqPackages.slice(0, 4)
-const logoImage = useCloudImageUrl(() => brand.logo)
+const capsuleSafeAreaStyle = useCapsuleSafeArea()
+const brandMarkImage = useCloudImageUrl(() => brand.logos.mark)
+const heroLogoImage = useCloudImageUrl(() => brand.logos.white)
 const heroPoster = useCloudImageUrl(() => hero.poster)
+
+function logHomeImageEvent(scope, rawSrc, resolvedSrc, event) {
+  logImageRenderEvent(`Home:${scope}`, rawSrc, resolvedSrc, event)
+}
 
 function goPackages() {
   uni.reLaunch({
@@ -31,31 +41,47 @@ function showToast(title) {
 </script>
 
 <template>
-  <view class="page">
+  <view class="page" :style="capsuleSafeAreaStyle">
     <view class="status-space"></view>
 
     <view class="topbar">
       <view class="brand-lockup">
         <view class="brand-title-row">
-          <image class="brand-mark" :src="logoImage" mode="aspectFit" />
+          <image
+            class="brand-mark"
+            :src="brandMarkImage"
+            mode="aspectFit"
+            @load="logHomeImageEvent('brand-logo', brand.logos.mark, brandMarkImage, $event)"
+            @error="logHomeImageEvent('brand-logo', brand.logos.mark, brandMarkImage, $event)"
+          />
           <text class="brand-name">{{ brand.name }}</text>
         </view>
         <text class="brand-tagline">{{ brand.tagline }}</text>
       </view>
-      <button
-        class="city-pill"
-        hover-class="pill-hover"
-        @tap="showToast('当前城市：南宁市')"
-      >
+      <button class="city-pill" hover-class="pill-hover" @tap="showToast('当前城市：南宁市')">
         {{ brand.city }}
       </button>
     </view>
 
     <view class="hero-card">
-      <image class="hero-bg" :src="heroPoster" mode="aspectFill" />
+      <!-- 拆开拼接，编译器就不会识别为本地路径 -->
+      <image
+        class="hero-bg"
+        :src="heroPoster"
+        mode="aspectFill"
+        @load="logHomeImageEvent('hero-bg', hero.poster, heroPoster, $event)"
+        @error="logHomeImageEvent('hero-bg', hero.poster, heroPoster, $event)"
+      />
+
       <view class="hero-mask"></view>
       <view class="hero-content">
-        <image class="hero-logo" :src="logoImage" mode="aspectFit" />
+        <image
+          class="hero-logo"
+          :src="heroLogoImage"
+          mode="aspectFit"
+          @load="logHomeImageEvent('hero-logo', brand.logos.white, heroLogoImage, $event)"
+          @error="logHomeImageEvent('hero-logo', brand.logos.white, heroLogoImage, $event)"
+        />
         <text class="hero-eyebrow">{{ hero.eyebrow }}</text>
         <text class="hero-title">{{ hero.title }}</text>
         <text class="hero-subtitle">{{ hero.subtitle }}</text>
@@ -65,11 +91,7 @@ function showToast(title) {
           }}</text>
         </view>
         <view class="hero-actions">
-          <button
-            class="primary-action"
-            hover-class="primary-action--hover"
-            @tap="goPackages"
-          >
+          <button class="primary-action" hover-class="primary-action--hover" @tap="goPackages">
             查看套餐
           </button>
           <CustomerServiceButton label="问档期" variant="light" />
@@ -78,49 +100,25 @@ function showToast(title) {
     </view>
 
     <view class="content">
-      <SectionTitle
-        title="精选 BBQ 套餐"
-        subtitle="人数、炉具、桌椅、天幕和氛围灯一套配齐"
-        action-label="全部"
-        @action="goPackages"
-      />
+      <SectionTitle title="精选 BBQ 套餐" subtitle="人数、炉具、桌椅、天幕和氛围灯一套配齐" action-label="全部" @action="goPackages" />
       <scroll-view class="package-scroll" scroll-x enable-flex>
         <view class="package-row">
-          <PackagePosterCard
-            v-for="item in featuredPackages"
-            :key="item.id"
-            :item="item"
-            compact
-          />
+          <PackagePosterCard v-for="item in featuredPackages" :key="item.id" :item="item" compact />
         </view>
       </scroll-view>
 
-      <SectionTitle
-        title="租赁服务"
-        subtitle="适合年轻朋友聚会、女生小团体、亲子家庭和公司团建"
-      />
+      <SectionTitle title="租赁服务" subtitle="适合年轻朋友聚会、女生小团体、亲子家庭和公司团建" />
       <view class="service-grid">
-        <view
-          v-for="service in serviceCards"
-          :key="service.id"
-          class="service-card"
-        >
+        <view v-for="service in serviceCards" :key="service.id" class="service-card">
           <text class="service-badge">{{ service.badge }}</text>
           <text class="service-title">{{ service.title }}</text>
           <text class="service-subtitle">{{ service.subtitle }}</text>
         </view>
       </view>
 
-      <SectionTitle
-        title="怎么租"
-        subtitle="从选择套餐到取还装备，按约定时间轻松完成"
-      />
+      <SectionTitle title="怎么租" subtitle="从选择套餐到取还装备，按约定时间轻松完成" />
       <view class="step-card">
-        <view
-          v-for="(step, index) in rentalSteps"
-          :key="step.id"
-          class="step-row"
-        >
+        <view v-for="(step, index) in rentalSteps" :key="step.id" class="step-row">
           <view class="step-index">{{ index + 1 }}</view>
           <view class="step-copy">
             <text class="step-title">{{ step.title }}</text>
@@ -137,18 +135,15 @@ function showToast(title) {
 <style scoped>
 .page {
   min-height: 100vh;
+  overflow-x: hidden;
   padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
   background:
-    radial-gradient(
-      circle at 16% 0%,
+    radial-gradient(circle at 16% 0%,
       rgba(213, 184, 124, 0.2),
-      transparent 26%
-    ),
-    radial-gradient(
-      circle at 88% 12%,
+      transparent 26%),
+    radial-gradient(circle at 88% 12%,
       rgba(82, 112, 88, 0.16),
-      transparent 28%
-    ),
+      transparent 28%),
     linear-gradient(180deg, #fbfaf7 0%, #f1f4ef 52%, #f8f5ee 100%);
 }
 
@@ -160,13 +155,19 @@ function showToast(title) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22rpx 30rpx 12rpx;
+  height: var(--capsule-button-height, 64rpx);
+  margin-top: var(--capsule-top-gap, 22rpx);
+  padding: 0 var(--capsule-safe-right, 30rpx) 0 30rpx;
 }
 
 .brand-lockup {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  justify-content: center;
+  height: var(--capsule-button-height, 64rpx);
   min-width: 0;
+  padding-right: 18rpx;
 }
 
 .brand-title-row {
@@ -177,36 +178,38 @@ function showToast(title) {
 
 .brand-mark {
   flex: 0 0 auto;
-  width: 56rpx;
-  height: 56rpx;
+  width: 44rpx;
+  height: 44rpx;
 }
 
 .brand-name {
-  margin-left: 12rpx;
+  margin-left: 10rpx;
   color: #1d2b20;
-  font-size: 36rpx;
+  font-size: 32rpx;
   font-weight: 900;
-  line-height: 44rpx;
+  line-height: 36rpx;
 }
 
 .brand-tagline {
-  margin-top: 2rpx;
+  margin-top: 0;
   color: #687164;
-  font-size: 20rpx;
-  line-height: 28rpx;
+  font-size: 18rpx;
+  line-height: 22rpx;
 }
 
 .city-pill {
-  height: 64rpx;
+  flex: 0 0 auto;
+  height: var(--capsule-button-height, 64rpx);
+  min-height: 56rpx;
   margin: 0;
   padding: 0 24rpx;
   border: 1rpx solid rgba(34, 61, 45, 0.12);
   border-radius: 999rpx;
   background: rgba(255, 255, 255, 0.78);
   color: #223d2d;
-  font-size: 25rpx;
+  font-size: 24rpx;
   font-weight: 760;
-  line-height: 64rpx;
+  line-height: var(--capsule-button-height, 64rpx);
   -webkit-backdrop-filter: blur(18rpx);
   backdrop-filter: blur(18rpx);
 }
@@ -224,8 +227,9 @@ function showToast(title) {
 .hero-card {
   position: relative;
   height: 780rpx;
-  margin: 20rpx 30rpx 0;
+  margin: var(--capsule-after-gap, 16rpx) 30rpx 0;
   overflow: hidden;
+  border: 1rpx solid rgba(255, 248, 237, 0.24);
   border-radius: 42rpx;
   background: #223d2d;
   box-shadow: 0 30rpx 80rpx rgba(30, 42, 32, 0.22);
@@ -242,12 +246,10 @@ function showToast(title) {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(
-      180deg,
+    linear-gradient(180deg,
       rgba(16, 24, 18, 0.08) 0%,
       rgba(16, 24, 18, 0.58) 56%,
-      rgba(16, 24, 18, 0.9) 100%
-    ),
+      rgba(16, 24, 18, 0.9) 100%),
     linear-gradient(90deg, rgba(16, 24, 18, 0.62), rgba(16, 24, 18, 0.05));
 }
 
@@ -261,9 +263,9 @@ function showToast(title) {
 }
 
 .hero-logo {
-  width: 176rpx;
-  height: 62rpx;
-  margin-bottom: 20rpx;
+  width: 118rpx;
+  height: 118rpx;
+  margin-bottom: 18rpx;
 }
 
 .hero-eyebrow {
@@ -399,7 +401,7 @@ function showToast(title) {
   padding: 0 26rpx;
 }
 
-.step-row + .step-row::before {
+.step-row+.step-row::before {
   position: absolute;
   top: 0;
   right: 26rpx;

@@ -15,6 +15,13 @@
       }
     },
     {
+      "path": "pages/ingredients/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "食材"
+      }
+    },
+    {
       "path": "pages/mine/index",
       "style": {
         "navigationStyle": "custom",

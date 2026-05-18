@@ -6,11 +6,21 @@ export function cloudAsset(fileName) {
   return `${cloudStoragePrefix}${fileName}`
 }
 
+export function ingredientAsset(fileName) {
+  return `${cloudStoragePrefix}Ingredients/${fileName}`
+}
+
 export const brand = {
   name: '暮山川',
   tagline: '露营租赁 · 活动策划',
   city: '南宁市',
-  logo: cloudAsset('LOGO.png')
+  logo: cloudAsset('logo-mark.png'),
+  logos: {
+    mark: cloudAsset('logo-mark.png'),
+    white: cloudAsset('logo-white.png'),
+    wordmarkWhite: cloudAsset('logo-wordmark-white.png'),
+    full: cloudAsset('logo-white.png')
+  }
 }
 
 export const hero = {
@@ -20,6 +30,12 @@ export const hero = {
     '烧烤炉、天幕桌椅、露营灯、燃气和聚会套餐一次配齐，适合闺蜜小聚、情侣约会、家庭露营和公司团建。',
   poster: cloudAsset('package-4p.png'),
   chips: ['自驾可取', '同城配送', '套餐齐全']
+}
+
+export const equipmentDetails = {
+  title: '设备单租价目',
+  subtitle: '天幕、桌椅、炉具、灯具等单项设备价格一图查看，可按活动人数加配。',
+  image: cloudAsset('equipment-details.png')
 }
 
 export const packageGroups = [
@@ -107,6 +123,107 @@ export const bbqPackages = [
     longRent: '支持活动策划加配',
     image: cloudAsset('package-15p.png'),
     features: ['多人装备', '场景搭建', '烧烤设备', '氛围照明']
+  }
+]
+
+export const ingredientPackages = [
+  {
+    id: 'ingredient-4',
+    title: '4人餐',
+    people: '4人食材套餐',
+    scene: '轻量烧烤 / 家庭小聚',
+    price: '¥178',
+    note: '适合小型露营烧烤加配',
+    image: ingredientAsset('meal-4-178.jpg'),
+    detailImage: ingredientAsset('meal-4-178-detail.jpg'),
+    features: ['食材海报', '明细图片', '可咨询加配']
+  },
+  {
+    id: 'ingredient-4-6',
+    title: '4-6人餐',
+    people: '4-6人食材套餐',
+    scene: '朋友聚会 / 周末露营',
+    price: '¥208',
+    note: '适合好友局基础食材',
+    image: ingredientAsset('meal-4-6-208.jpg'),
+    detailImage: ingredientAsset('meal-4-6-208-detail.jpg'),
+    features: ['食材海报', '明细图片', '好友局']
+  },
+  {
+    id: 'ingredient-6-7',
+    title: '6-7人餐',
+    people: '6-7人食材套餐',
+    scene: '生日派对 / 好友加量',
+    price: '¥248',
+    note: '适合中小型聚会',
+    image: ingredientAsset('meal-6-7-248.jpg'),
+    detailImage: ingredientAsset('meal-6-7-248-detail.jpg'),
+    features: ['食材海报', '明细图片', '聚会推荐']
+  },
+  {
+    id: 'ingredient-8',
+    title: '8人套餐',
+    people: '8人食材套餐',
+    scene: '多人聚餐 / 户外烧烤',
+    price: '¥328',
+    note: '当前资源为明细图',
+    image: ingredientAsset('meal-8-328-detail.jpg'),
+    features: ['明细图片', '多人聚餐', '可咨询加配']
+  },
+  {
+    id: 'ingredient-10-12',
+    title: '10-12人聚会餐',
+    people: '10-12人食材套餐',
+    scene: '朋友聚会 / 小型团建',
+    price: '¥458',
+    note: '适合多人聚会食材加配',
+    image: ingredientAsset('party-meal-10-12-458.jpg'),
+    detailImage: ingredientAsset('party-meal-10-12-458-detail.jpg'),
+    features: ['食材海报', '明细图片', '团建可配']
+  },
+  {
+    id: 'ingredient-16',
+    title: '16人餐',
+    people: '16人食材套餐',
+    scene: '团队聚餐 / 公司活动',
+    price: '¥598',
+    note: '适合团队烧烤食材加量',
+    image: ingredientAsset('meal-16-598.jpg'),
+    detailImage: ingredientAsset('meal-16-598-detail.jpg'),
+    features: ['食材海报', '明细图片', '团队聚餐']
+  },
+  {
+    id: 'ingredient-20-25',
+    title: '20-25人餐',
+    people: '20-25人食材套餐',
+    scene: '大型团建 / 户外活动',
+    price: '¥858',
+    note: '适合大型活动食材配置',
+    image: ingredientAsset('meal-20-25-858.png'),
+    detailImage: ingredientAsset('meal-20-25-858-detail.jpg'),
+    features: ['食材海报', '明细图片', '大型活动']
+  },
+  {
+    id: 'ingredient-meat-lover',
+    title: '纯肉肉套餐',
+    people: '肉食加配套餐',
+    scene: '烧烤加肉 / 朋友聚会',
+    price: '¥288',
+    note: '适合肉类食材加配',
+    image: ingredientAsset('meat-lover-meal-288.jpg'),
+    detailImage: ingredientAsset('meat-lover-meal-288-detail.jpg'),
+    features: ['食材海报', '明细图片', '肉类加配']
+  },
+  {
+    id: 'ingredient-steak-picnic',
+    title: '牛排野餐盒',
+    people: '野餐盒套餐',
+    scene: '露营野餐 / 精致加配',
+    price: '¥298',
+    note: '适合轻露营与野餐场景',
+    image: ingredientAsset('steak-picnic-box-298.png'),
+    detailImage: ingredientAsset('steak-picnic-box-298-detail.jpg'),
+    features: ['食材海报', '明细图片', '野餐盒']
   }
 ]
 

@@ -10,16 +10,20 @@ defineProps({
   variant: {
     type: String,
     default: 'solid'
+  },
+  compact: {
+    type: Boolean,
+    default: false
   }
 })
 
-const messageImage = useCloudImageUrl(() => brand.logo)
+const messageImage = useCloudImageUrl(() => brand.logos.white)
 </script>
 
 <template>
   <button
     class="customer-button"
-    :class="`customer-button--${variant}`"
+    :class="[`customer-button--${variant}`, { 'customer-button--compact': compact }]"
     hover-class="customer-button--hover"
     open-type="contact"
     show-message-card="true"
@@ -68,6 +72,15 @@ const messageImage = useCloudImageUrl(() => brand.logo)
   border: 1rpx solid rgba(34, 61, 45, 0.16);
   background: rgba(255, 255, 255, 0.74);
   color: #223d2d;
+}
+
+.customer-button--compact {
+  height: var(--capsule-button-height, 64rpx);
+  min-height: 56rpx;
+  padding: 0 24rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  line-height: var(--capsule-button-height, 64rpx);
 }
 
 .customer-button--hover {

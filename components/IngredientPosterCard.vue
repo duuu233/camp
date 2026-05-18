@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue'
 import { brand } from '../data/campData.js'
 import {
   logImageRenderEvent,
@@ -10,53 +11,72 @@ const props = defineProps({
   item: {
     type: Object,
     required: true
-  },
-  compact: {
-    type: Boolean,
-    default: false
   }
 })
 
-const emit = defineEmits(['contact'])
 const posterImage = useCloudImageUrl(() => props.item.image)
+const detailImage = useCloudImageUrl(() => props.item.detailImage || '')
 const messageImage = useCloudImageUrl(() => brand.logos.white)
-
-function logPackagePosterEvent(event) {
+const messageTitle = computed(() => `${brand.name} ${props.item.title} 食材咨询`)
+function logPosterImageEvent(event) {
   logImageRenderEvent(
-    `PackagePosterCard:${props.item.id}:poster`,
+    `IngredientPosterCard:${props.item.id}:poster`,
     props.item.image,
     posterImage.value,
     event
   )
 }
 
-function previewPoster() {
-  previewImageUrl(posterImage)
+function logDetailImageEvent(event) {
+  logImageRenderEvent(
+    `IngredientPosterCard:${props.item.id}:detail`,
+    props.item.detailImage || '',
+    detailImage.value,
+    event
+  )
+}
+
+function previewIngredientImage(currentImage) {
+  previewImageUrl(currentImage, [posterImage, detailImage])
 }
 </script>
 
 <template>
-  <view class="package-card" :class="{ 'package-card--compact': compact }">
-    <image
-      class="package-poster"
-      :src="posterImage"
-      mode="aspectFit"
-      @load="logPackagePosterEvent"
-      @error="logPackagePosterEvent"
-      @tap="previewPoster"
-    />
-    <view class="package-info">
-      <view class="package-head">
-        <view class="package-copy">
-          <text class="package-people">{{ item.people }}</text>
-          <text class="package-title">{{ item.title }}</text>
-          <text class="package-scene">{{ item.scene }}</text>
+  <view class="ingredient-card">
+    <view class="ingredient-media">
+      <image
+        class="ingredient-poster"
+        :class="{ 'ingredient-poster--single': !item.detailImage }"
+        :src="posterImage"
+        mode="aspectFit"
+        @load="logPosterImageEvent"
+        @error="logPosterImageEvent"
+        @tap="previewIngredientImage(posterImage)"
+      />
+      <image
+        v-if="item.detailImage"
+        class="ingredient-detail"
+        :src="detailImage"
+        mode="aspectFit"
+        @load="logDetailImageEvent"
+        @error="logDetailImageEvent"
+        @tap="previewIngredientImage(detailImage)"
+      />
+    </view>
+
+    <view class="ingredient-info">
+      <view class="ingredient-head">
+        <view class="ingredient-copy">
+          <text class="ingredient-people">{{ item.people }}</text>
+          <text class="ingredient-title">{{ item.title }}</text>
+          <text class="ingredient-scene">{{ item.scene }}</text>
         </view>
-        <view class="package-price">
+        <view class="ingredient-price">
           <text class="price-main">{{ item.price }}</text>
-          <text class="price-sub">{{ item.longRent }}</text>
+          <text class="price-note">{{ item.note }}</text>
         </view>
       </view>
+
       <view class="feature-row">
         <text
           v-for="feature in item.features"
@@ -65,15 +85,15 @@ function previewPoster() {
           >{{ feature }}</text
         >
       </view>
+
       <button
         class="contact-btn"
         hover-class="contact-btn--hover"
         open-type="contact"
         show-message-card="true"
-        send-message-title="暮山川 BBQ 套餐咨询"
-        send-message-path="/pages/packages/index"
+        :send-message-title="messageTitle"
+        send-message-path="/pages/ingredients/index"
         :send-message-img="messageImage"
-        @tap="emit('contact')"
       >
         微信客服咨询
       </button>
@@ -82,7 +102,7 @@ function previewPoster() {
 </template>
 
 <style scoped>
-.package-card {
+.ingredient-card {
   overflow: hidden;
   border: 1rpx solid rgba(34, 61, 45, 0.08);
   border-radius: 34rpx;
@@ -90,34 +110,45 @@ function previewPoster() {
   box-shadow: 0 24rpx 64rpx rgba(34, 42, 34, 0.1);
 }
 
-.package-card--compact {
-  width: 560rpx;
-  flex: 0 0 auto;
-  margin-right: 22rpx;
-}
-
-.package-poster {
-  display: block;
-  width: 100%;
-  height: 920rpx;
+.ingredient-media {
+  padding: 14rpx 14rpx 0;
   background: #fff;
 }
 
-.package-card--compact .package-poster {
-  height: 746rpx;
+.ingredient-poster,
+.ingredient-detail {
+  display: block;
+  width: 100%;
+  border-radius: 24rpx;
+  background: #fff;
 }
 
-.package-info {
+.ingredient-poster {
+  height: 920rpx;
+}
+
+.ingredient-poster--single {
+  height: 620rpx;
+}
+
+.ingredient-detail {
+  height: 560rpx;
+  margin-top: 14rpx;
+  border: 1rpx solid rgba(34, 61, 45, 0.08);
+  box-sizing: border-box;
+}
+
+.ingredient-info {
   padding: 24rpx;
 }
 
-.package-head {
+.ingredient-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
 }
 
-.package-copy {
+.ingredient-copy {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -125,7 +156,7 @@ function previewPoster() {
   padding-right: 20rpx;
 }
 
-.package-people {
+.ingredient-people {
   color: #c5973e;
   font-size: 22rpx;
   font-weight: 850;
@@ -133,19 +164,16 @@ function previewPoster() {
   line-height: 30rpx;
 }
 
-.package-title {
+.ingredient-title {
   margin-top: 6rpx;
-  overflow: hidden;
   color: #171b17;
   font-size: 31rpx;
   font-weight: 850;
   letter-spacing: 0;
   line-height: 40rpx;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.package-scene {
+.ingredient-scene {
   margin-top: 6rpx;
   overflow: hidden;
   color: #73786f;
@@ -155,22 +183,22 @@ function previewPoster() {
   white-space: nowrap;
 }
 
-.package-price {
+.ingredient-price {
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
   align-items: flex-end;
-  max-width: 190rpx;
+  max-width: 198rpx;
 }
 
 .price-main {
   color: #223d2d;
-  font-size: 31rpx;
+  font-size: 33rpx;
   font-weight: 900;
-  line-height: 38rpx;
+  line-height: 40rpx;
 }
 
-.price-sub {
+.price-note {
   margin-top: 5rpx;
   color: #9b7a3e;
   font-size: 19rpx;
@@ -181,9 +209,7 @@ function previewPoster() {
 .feature-row {
   display: flex;
   flex-wrap: wrap;
-  max-height: 88rpx;
   margin-top: 18rpx;
-  overflow: hidden;
 }
 
 .feature-chip {

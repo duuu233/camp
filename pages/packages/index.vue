@@ -3,11 +3,28 @@ import { computed, shallowRef } from 'vue'
 import CampTabBar from '../../components/CampTabBar.vue'
 import CustomerServiceButton from '../../components/CustomerServiceButton.vue'
 import PackagePosterCard from '../../components/PackagePosterCard.vue'
-import { useCloudImageUrl } from '../../composables/useCloudImageUrl.js'
-import { bbqPackages, brand, packageGroups } from '../../data/campData.js'
+import SectionTitle from '../../components/SectionTitle.vue'
+import {
+  logImageRenderEvent,
+  previewImageUrl,
+  useCapsuleSafeArea,
+  useCloudImageUrl
+} from '../../composables/useCloudImageUrl.js'
+import {
+  bbqPackages,
+  brand,
+  equipmentDetails,
+  packageGroups
+} from '../../data/campData.js'
 
 const activeGroup = shallowRef('all')
-const logoImage = useCloudImageUrl(() => brand.logo)
+const capsuleSafeAreaStyle = useCapsuleSafeArea()
+const logoImage = useCloudImageUrl(() => brand.logos.mark)
+const equipmentImage = useCloudImageUrl(() => equipmentDetails.image)
+
+function logPackagesImageEvent(scope, rawSrc, resolvedSrc, event) {
+  logImageRenderEvent(`Packages:${scope}`, rawSrc, resolvedSrc, event)
+}
 
 const visiblePackages = computed(() => {
   if (activeGroup.value === 'all') {
@@ -20,22 +37,34 @@ const visiblePackages = computed(() => {
 function setGroup(groupId) {
   activeGroup.value = groupId
 }
+
+function previewEquipmentImage() {
+  previewImageUrl(equipmentImage)
+}
 </script>
 
 <template>
-  <view class="page">
+  <view class="page" :style="capsuleSafeAreaStyle">
     <view class="status-space"></view>
 
     <view class="page-head">
-      <view class="head-copy">
+      <view class="head-top">
         <view class="head-brand">
-          <image class="head-logo" :src="logoImage" mode="aspectFit" />
+          <image
+            class="head-logo"
+            :src="logoImage"
+            mode="aspectFit"
+            @load="logPackagesImageEvent('head-logo', brand.logos.mark, logoImage, $event)"
+            @error="logPackagesImageEvent('head-logo', brand.logos.mark, logoImage, $event)"
+          />
           <text class="head-brand-name">{{ brand.name }}</text>
         </view>
+        <CustomerServiceButton label="咨询" variant="ghost" compact />
+      </view>
+      <view class="head-copy">
         <text class="head-title">BBQ 套餐</text>
         <text class="head-subtitle">按人数选择海报套餐，具体档期、配送范围和加配内容可直接咨询微信客服。</text>
       </view>
-      <CustomerServiceButton label="咨询" variant="ghost" />
     </view>
 
     <scroll-view class="filter-scroll" scroll-x enable-flex>
@@ -57,6 +86,23 @@ function setGroup(groupId) {
       <PackagePosterCard v-for="item in visiblePackages" :key="item.id" :item="item" />
     </view>
 
+    <view class="equipment-section">
+      <SectionTitle
+        :title="equipmentDetails.title"
+        :subtitle="equipmentDetails.subtitle"
+      />
+      <view class="equipment-card">
+        <image
+          class="equipment-image"
+          :src="equipmentImage"
+          mode="aspectFit"
+          @load="logPackagesImageEvent('equipment-details', equipmentDetails.image, equipmentImage, $event)"
+          @error="logPackagesImageEvent('equipment-details', equipmentDetails.image, equipmentImage, $event)"
+          @tap="previewEquipmentImage"
+        />
+      </view>
+    </view>
+
     <CampTabBar active="packages" />
   </view>
 </template>
@@ -64,6 +110,7 @@ function setGroup(groupId) {
 <style scoped>
 .page {
   min-height: 100vh;
+  overflow-x: hidden;
   padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 86% 0%, rgba(213, 184, 124, 0.2), transparent 27%),
@@ -75,18 +122,23 @@ function setGroup(groupId) {
 }
 
 .page-head {
+  padding-bottom: 20rpx;
+}
+
+.head-top {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  padding: 28rpx 30rpx 18rpx;
+  height: var(--capsule-button-height, 64rpx);
+  margin-top: var(--capsule-top-gap, 22rpx);
+  padding: 0 var(--capsule-safe-right, 30rpx) 0 30rpx;
 }
 
 .head-copy {
   display: flex;
-  flex: 1;
   flex-direction: column;
   min-width: 0;
-  padding-right: 22rpx;
+  padding: 24rpx 30rpx 0;
 }
 
 .head-brand {
@@ -95,20 +147,19 @@ function setGroup(groupId) {
 }
 
 .head-logo {
-  width: 54rpx;
-  height: 54rpx;
+  width: 44rpx;
+  height: 44rpx;
 }
 
 .head-brand-name {
-  margin-left: 12rpx;
+  margin-left: 10rpx;
   color: #223d2d;
   font-size: 30rpx;
   font-weight: 860;
-  line-height: 38rpx;
+  line-height: 36rpx;
 }
 
 .head-title {
-  margin-top: 16rpx;
   color: #171b17;
   font-size: 48rpx;
   font-weight: 900;
@@ -165,5 +216,24 @@ function setGroup(groupId) {
   flex-direction: column;
   gap: 24rpx;
   padding: 0 30rpx;
+}
+
+.equipment-section {
+  padding: 0 30rpx;
+}
+
+.equipment-card {
+  overflow: hidden;
+  border: 1rpx solid rgba(34, 61, 45, 0.08);
+  border-radius: 34rpx;
+  background: #fffdfa;
+  box-shadow: 0 24rpx 64rpx rgba(34, 42, 34, 0.1);
+}
+
+.equipment-image {
+  display: block;
+  width: 100%;
+  height: 1035rpx;
+  background: #fff;
 }
 </style>
