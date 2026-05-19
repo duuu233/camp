@@ -6,12 +6,14 @@ import PickupLocationCard from '../../components/PickupLocationCard.vue'
 import SectionTitle from '../../components/SectionTitle.vue'
 import {
   logImageRenderEvent,
+  previewImageUrl,
   useCapsuleSafeArea,
   useCloudImageUrl
 } from '../../composables/useCloudImageUrl.js'
 import {
   bbqPackages,
   brand,
+  housekeepingRules,
   hero,
   rentalSteps,
   serviceCards
@@ -22,6 +24,7 @@ const capsuleSafeAreaStyle = useCapsuleSafeArea()
 const brandMarkImage = useCloudImageUrl(() => brand.logos.mark)
 const heroLogoImage = useCloudImageUrl(() => brand.logos.white)
 const heroPoster = useCloudImageUrl(() => hero.poster)
+const housekeepingImage = useCloudImageUrl(() => housekeepingRules.image)
 
 function logHomeImageEvent(scope, rawSrc, resolvedSrc, event) {
   logImageRenderEvent(`Home:${scope}`, rawSrc, resolvedSrc, event)
@@ -31,6 +34,16 @@ function goPackages() {
   uni.reLaunch({
     url: '/pages/packages/index'
   })
+}
+
+function goRentalGuide() {
+  uni.navigateTo({
+    url: '/pages/rental/index'
+  })
+}
+
+function previewHousekeepingRules() {
+  previewImageUrl(housekeepingImage)
 }
 
 function showToast(title) {
@@ -117,11 +130,35 @@ function showToast(title) {
         </view>
       </view>
 
+      <view class="housekeeping-card">
+        <view class="housekeeping-head">
+          <view class="housekeeping-copy">
+            <text class="housekeeping-title">{{ housekeepingRules.title }}</text>
+            <text class="housekeeping-subtitle">{{ housekeepingRules.subtitle }}</text>
+          </view>
+          <button
+            class="guide-button"
+            hover-class="guide-button--hover"
+            @tap="goRentalGuide"
+          >
+            租赁说明
+          </button>
+        </view>
+        <image
+          class="housekeeping-image"
+          :src="housekeepingImage"
+          mode="aspectFit"
+          @load="logHomeImageEvent('housekeeping-rules', housekeepingRules.image, housekeepingImage, $event)"
+          @error="logHomeImageEvent('housekeeping-rules', housekeepingRules.image, housekeepingImage, $event)"
+          @tap="previewHousekeepingRules"
+        />
+      </view>
+
       <view class="pickup-section">
         <PickupLocationCard title="自提取装点" />
       </view>
 
-      <SectionTitle title="怎么租" subtitle="从选择套餐到取还装备，按约定时间轻松完成" />
+      <SectionTitle title="怎么租" subtitle="从选择套餐到取还装备，按约定时间轻松完成" action-label="说明" @action="goRentalGuide" />
       <view class="step-card">
         <view v-for="(step, index) in rentalSteps" :key="step.id" class="step-row">
           <view class="step-index">{{ index + 1 }}</view>
@@ -388,6 +425,74 @@ function showToast(title) {
   color: #72786f;
   font-size: 21rpx;
   line-height: 31rpx;
+}
+
+.housekeeping-card {
+  margin-top: 24rpx;
+  overflow: hidden;
+  border: 1rpx solid rgba(34, 61, 45, 0.08);
+  border-radius: 30rpx;
+  background: #fffdfa;
+  box-shadow: 0 18rpx 52rpx rgba(34, 42, 34, 0.08);
+}
+
+.housekeeping-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 24rpx 24rpx 18rpx;
+}
+
+.housekeeping-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  padding-right: 18rpx;
+}
+
+.housekeeping-title {
+  color: #171b17;
+  font-size: 30rpx;
+  font-weight: 900;
+  line-height: 40rpx;
+}
+
+.housekeeping-subtitle {
+  margin-top: 6rpx;
+  color: #73786f;
+  font-size: 22rpx;
+  line-height: 32rpx;
+}
+
+.guide-button {
+  flex: 0 0 auto;
+  width: 152rpx;
+  height: 58rpx;
+  margin: 0;
+  padding: 0;
+  border: 1rpx solid rgba(34, 61, 45, 0.14);
+  border-radius: 16rpx;
+  background: #f2efe7;
+  color: #223d2d;
+  font-size: 23rpx;
+  font-weight: 820;
+  line-height: 58rpx;
+}
+
+.guide-button::after {
+  border: 0;
+}
+
+.guide-button--hover {
+  opacity: 0.84;
+}
+
+.housekeeping-image {
+  display: block;
+  width: 100%;
+  height: 894rpx;
+  background: #fff;
 }
 
 .pickup-section {
