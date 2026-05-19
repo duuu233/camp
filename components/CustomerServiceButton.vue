@@ -43,7 +43,7 @@ const messageImage = useCloudImageUrl(() => brand.logos.white)
   height: 74rpx;
   margin: 0;
   padding: 0 26rpx;
-  border-radius: 22rpx;
+  border-radius: 14rpx;
   font-size: 27rpx;
   font-weight: 820;
   letter-spacing: 0;
@@ -78,7 +78,7 @@ const messageImage = useCloudImageUrl(() => brand.logos.white)
   height: var(--capsule-button-height, 64rpx);
   min-height: 56rpx;
   padding: 0 24rpx;
-  border-radius: 999rpx;
+  border-radius: 16rpx;
   font-size: 24rpx;
   line-height: var(--capsule-button-height, 64rpx);
 }

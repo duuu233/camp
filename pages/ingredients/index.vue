@@ -75,7 +75,7 @@ function logIngredientsImageEvent(scope, rawSrc, resolvedSrc, event) {
 }
 
 .status-space {
-  height: var(--status-bar-height);
+  height: var(--capsule-reserved-height, 174rpx);
 }
 
 .page-head {
@@ -87,8 +87,8 @@ function logIngredientsImageEvent(scope, rawSrc, resolvedSrc, event) {
   align-items: center;
   justify-content: space-between;
   height: var(--capsule-button-height, 64rpx);
-  margin-top: var(--capsule-top-gap, 22rpx);
-  padding: 0 var(--capsule-safe-right, 30rpx) 0 30rpx;
+  margin-top: var(--capsule-after-gap, 28rpx);
+  padding: 0 30rpx;
 }
 
 .head-copy {

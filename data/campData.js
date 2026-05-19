@@ -38,6 +38,15 @@ export const equipmentDetails = {
   image: cloudAsset('equipment-details.png')
 }
 
+export const pickupLocation = {
+  title: '自提地址',
+  name: '暮山川 BBQ 装备自提点',
+  address: '南宁市良庆区瓦村路与良堤路交叉口正南方向85米左右',
+  latitude: 22.74096,
+  longitude: 108.44472,
+  tip: '自提前请先和客服确认档期、取装时间和归还方式。'
+}
+
 export const packageGroups = [
   { id: 'all', label: '全部' },
   { id: 'date', label: '双人' },
@@ -54,7 +63,7 @@ export const bbqPackages = [
     people: '2人套餐',
     scene: '情侣约会 / 闺蜜小聚',
     price: '¥58/日',
-    longRent: '长租低至 ¥48/天',
+    longRent: '长租低至 ¥48/日',
     image: cloudAsset('package-2p.png'),
     features: ['天幕', '桌椅', '卡式炉', '烤盘', '露营灯', '燃气']
   },
@@ -65,7 +74,7 @@ export const bbqPackages = [
     people: '4人套餐',
     scene: '好友聚会 / 周末露营',
     price: '¥68/日',
-    longRent: '长租低至 ¥58/天',
+    longRent: '长租低至 ¥58/日',
     image: cloudAsset('package-4p.png'),
     features: ['大天幕', '四椅', '蛋卷桌', '炉具', '烤盘', '燃气']
   },
@@ -237,7 +246,7 @@ export const serviceCards = [
   {
     id: 'pickup',
     title: '自提自还',
-    subtitle: '适合自驾玩家，档期更灵活',
+    subtitle: '良庆区自提点可导航，到店取还更灵活',
     badge: '灵活'
   },
   {
@@ -255,7 +264,7 @@ export const rentalSteps = [
     title: '问档期',
     detail: '通过微信客服确认时间、地点和加配'
   },
-  { id: 'receive', title: '取装备', detail: '同城配送或自驾到店取用' },
+  { id: 'receive', title: '取装备', detail: '支持同城配送，也可导航到良庆区自提点取用' },
   { id: 'return', title: '轻松还', detail: '按约定时间归还并清点' }
 ]
 

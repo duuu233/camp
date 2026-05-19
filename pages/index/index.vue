@@ -2,6 +2,7 @@
 import CampTabBar from '../../components/CampTabBar.vue'
 import CustomerServiceButton from '../../components/CustomerServiceButton.vue'
 import PackagePosterCard from '../../components/PackagePosterCard.vue'
+import PickupLocationCard from '../../components/PickupLocationCard.vue'
 import SectionTitle from '../../components/SectionTitle.vue'
 import {
   logImageRenderEvent,
@@ -116,6 +117,10 @@ function showToast(title) {
         </view>
       </view>
 
+      <view class="pickup-section">
+        <PickupLocationCard title="自提取装点" />
+      </view>
+
       <SectionTitle title="怎么租" subtitle="从选择套餐到取还装备，按约定时间轻松完成" />
       <view class="step-card">
         <view v-for="(step, index) in rentalSteps" :key="step.id" class="step-row">
@@ -148,7 +153,7 @@ function showToast(title) {
 }
 
 .status-space {
-  height: var(--status-bar-height);
+  height: var(--capsule-reserved-height, 174rpx);
 }
 
 .topbar {
@@ -156,8 +161,8 @@ function showToast(title) {
   align-items: center;
   justify-content: space-between;
   height: var(--capsule-button-height, 64rpx);
-  margin-top: var(--capsule-top-gap, 22rpx);
-  padding: 0 var(--capsule-safe-right, 30rpx) 0 30rpx;
+  margin-top: var(--capsule-after-gap, 28rpx);
+  padding: 0 30rpx;
 }
 
 .brand-lockup {
@@ -227,7 +232,7 @@ function showToast(title) {
 .hero-card {
   position: relative;
   height: 780rpx;
-  margin: var(--capsule-after-gap, 16rpx) 30rpx 0;
+  margin: var(--capsule-after-gap, 28rpx) 30rpx 0;
   overflow: hidden;
   border: 1rpx solid rgba(255, 248, 237, 0.24);
   border-radius: 42rpx;
@@ -383,6 +388,10 @@ function showToast(title) {
   color: #72786f;
   font-size: 21rpx;
   line-height: 31rpx;
+}
+
+.pickup-section {
+  margin-top: 26rpx;
 }
 
 .step-card {

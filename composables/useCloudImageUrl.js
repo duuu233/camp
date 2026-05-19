@@ -1,14 +1,16 @@
 import { onMounted, shallowRef, watch } from "vue";
 import { cloudEnvId } from "../data/campData.js";
+import { ensureWechatCloudReady } from "./useWechatCloud.js";
 
-let wxCloudReady = false;
 const imageDebugPrefix = "[ImageDebug]";
 const capsuleFallbackStyle = {
+  "--status-bar-height": "88rpx",
   "--capsule-safe-right": "30rpx",
   "--capsule-top-gap": "22rpx",
-  "--capsule-after-gap": "16rpx",
+  "--capsule-after-gap": "28rpx",
   "--capsule-button-height": "64rpx",
-  "--capsule-block-offset": "28rpx",
+  "--capsule-reserved-height": "174rpx",
+  "--capsule-block-offset": "114rpx",
 };
 
 function logImageDebug(stage, payload) {
@@ -122,71 +124,65 @@ export function resolveCloudImageUrl(fileId) {
     return Promise.resolve(resolveCloudFallback(fileId, "wx-cloud-missing"));
   }
 
-  if (!wxCloudReady) {
-    try {
-      wx.cloud.init({
-        env: cloudEnvId,
-        traceUser: true,
-      });
-      logImageDebug("wx-cloud:init", {
-        cloudEnvId,
-      });
-    } catch (error) {
+  return ensureWechatCloudReady()
+    .then(
+      () =>
+        new Promise((resolve) => {
+          logImageDebug("wx-cloud:ready", {
+            cloudEnvId,
+          });
+
+          logImageDebug("wx-cloud:getTempFileURL:start", {
+            fileId,
+          });
+
+          wx.cloud.getTempFileURL({
+            fileList: [fileId],
+            success: (res) => {
+              const file = res.fileList && res.fileList[0];
+              const resolvedUrl = file && file.status === 0 ? file.tempFileURL : "";
+              logImageDebug("wx-cloud:getTempFileURL:success", {
+                fileId,
+                file,
+                resolvedUrl,
+                rawResponse: res,
+              });
+
+              if (resolvedUrl) {
+                resolve(resolvedUrl);
+                return;
+              }
+
+              logImageDebug("wx-cloud:getTempFileURL:file-error", {
+                fileId,
+                status: file && file.status,
+                errMsg: file && file.errMsg,
+                file,
+              });
+              resolve(resolveCloudFallback(fileId, "getTempFileURL-empty", file));
+            },
+            fail: (error) => {
+              logImageDebug("wx-cloud:getTempFileURL:fail", {
+                fileId,
+                error,
+                message: error && error.errMsg,
+              });
+              resolve(resolveCloudFallback(fileId, "getTempFileURL-fail", error));
+            },
+          });
+        }),
+    )
+    .catch((error) => {
       logImageDebug("wx-cloud:init-fail", {
         cloudEnvId,
         error,
         message: error && error.message,
       });
-      return Promise.resolve(
-        resolveCloudFallback(fileId, "wx-cloud-init-fail", {
-          error,
-          message: error && error.message,
-        }),
-      );
-    }
-    wxCloudReady = true;
-  }
-
-  return new Promise((resolve) => {
-    logImageDebug("wx-cloud:getTempFileURL:start", {
-      fileId,
+      return resolveCloudFallback(fileId, "wx-cloud-init-fail", {
+        error,
+        message: error && error.message,
+      });
     });
-
-    wx.cloud.getTempFileURL({
-      fileList: [fileId],
-      success: (res) => {
-        const file = res.fileList && res.fileList[0];
-        const resolvedUrl = file && file.status === 0 ? file.tempFileURL : "";
-        logImageDebug("wx-cloud:getTempFileURL:success", {
-          fileId,
-          file,
-          resolvedUrl,
-          rawResponse: res,
-        });
-
-        if (resolvedUrl) {
-          resolve(resolvedUrl);
-          return;
-        }
-
-        logImageDebug("wx-cloud:getTempFileURL:file-error", {
-          fileId,
-          status: file && file.status,
-          errMsg: file && file.errMsg,
-          file,
-        });
-        resolve(resolveCloudFallback(fileId, "getTempFileURL-empty", file));
-      },
-      fail: (error) => {
-        logImageDebug("wx-cloud:getTempFileURL:fail", {
-          fileId,
-          error,
-          message: error && error.errMsg,
-        });
-        resolve(resolveCloudFallback(fileId, "getTempFileURL-fail", error));
-      },
-    });
-  });
   // #endif
 
   // #ifndef MP-WEIXIN
@@ -257,17 +253,21 @@ function readCapsuleStyle() {
     }
 
     const statusBarHeight = systemInfo.statusBarHeight || 0;
-    const topGap = Math.max(menuButton.top - statusBarHeight, 6);
+    const menuTop = Math.max(menuButton.top || statusBarHeight, statusBarHeight);
+    const topGap = Math.max(menuTop - statusBarHeight, 6);
     const buttonHeight = Math.max(menuButton.height, 32);
     const safeRight = Math.max(systemInfo.windowWidth - menuButton.left + 8, 104);
-    const afterGap = Math.max(topGap + 8, 14);
+    const afterGap = Math.max(topGap + 10, 18);
+    const reservedHeight = menuTop + buttonHeight;
 
     return {
+      "--status-bar-height": `${statusBarHeight}px`,
       "--capsule-safe-right": `${safeRight}px`,
       "--capsule-top-gap": `${topGap}px`,
       "--capsule-after-gap": `${afterGap}px`,
       "--capsule-button-height": `${buttonHeight}px`,
-      "--capsule-block-offset": `${topGap + buttonHeight + 14}px`,
+      "--capsule-reserved-height": `${reservedHeight}px`,
+      "--capsule-block-offset": `${topGap + buttonHeight + afterGap}px`,
     };
   } catch (error) {
     return capsuleFallbackStyle;

@@ -3,6 +3,7 @@ import { computed, shallowRef } from 'vue'
 import CampTabBar from '../../components/CampTabBar.vue'
 import CustomerServiceButton from '../../components/CustomerServiceButton.vue'
 import PackagePosterCard from '../../components/PackagePosterCard.vue'
+import PickupLocationCard from '../../components/PickupLocationCard.vue'
 import SectionTitle from '../../components/SectionTitle.vue'
 import {
   logImageRenderEvent,
@@ -82,6 +83,10 @@ function previewEquipmentImage() {
       </view>
     </scroll-view>
 
+    <view class="pickup-strip">
+      <PickupLocationCard title="自提地址" compact />
+    </view>
+
     <view class="package-list">
       <PackagePosterCard v-for="item in visiblePackages" :key="item.id" :item="item" />
     </view>
@@ -118,7 +123,7 @@ function previewEquipmentImage() {
 }
 
 .status-space {
-  height: var(--status-bar-height);
+  height: var(--capsule-reserved-height, 174rpx);
 }
 
 .page-head {
@@ -130,8 +135,8 @@ function previewEquipmentImage() {
   align-items: center;
   justify-content: space-between;
   height: var(--capsule-button-height, 64rpx);
-  margin-top: var(--capsule-top-gap, 22rpx);
-  padding: 0 var(--capsule-safe-right, 30rpx) 0 30rpx;
+  margin-top: var(--capsule-after-gap, 28rpx);
+  padding: 0 30rpx;
 }
 
 .head-copy {
@@ -209,6 +214,10 @@ function previewEquipmentImage() {
 
 .filter-chip--hover {
   opacity: 0.82;
+}
+
+.pickup-strip {
+  padding: 0 30rpx 24rpx;
 }
 
 .package-list {

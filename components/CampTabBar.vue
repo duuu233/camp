@@ -7,13 +7,13 @@ const props = defineProps({
 })
 
 const tabs = [
-  { id: 'home', label: '首页', url: '/pages/index/index', icon: '暮' },
-  { id: 'packages', label: '套餐', url: '/pages/packages/index', icon: '山' },
+  { id: 'home', label: '首页', url: '/pages/index/index', icon: '爱' },
+  { id: 'packages', label: '设备', url: '/pages/packages/index', icon: '暮' },
   {
     id: 'ingredients',
     label: '食材',
     url: '/pages/ingredients/index',
-    icon: '味'
+    icon: '山'
   },
   { id: 'mine', label: '我的', url: '/pages/mine/index', icon: '川' }
 ]
