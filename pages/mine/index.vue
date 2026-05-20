@@ -200,6 +200,17 @@ function showReservedToast() {
     icon: 'none'
   })
 }
+
+function handleMenuTap(item) {
+  if (item.id === 'guide') {
+    uni.navigateTo({
+      url: '/pages/rental/index'
+    })
+    return
+  }
+
+  showReservedToast()
+}
 </script>
 
 <template>
@@ -348,7 +359,7 @@ function showReservedToast() {
         v-for="item in group.items"
         :key="item.id"
         class="menu-row"
-        @tap="showReservedToast"
+        @tap="handleMenuTap(item)"
       >
         <view class="menu-copy">
           <text class="menu-label">{{ item.label }}</text>
