@@ -39,7 +39,9 @@ const profileSubtitle = computed(() => {
     return '资料保存中'
   }
 
-  return user.value ? '已登录，点击头像和昵称可更新' : ''
+  return user.value
+    ? '已登录，点击头像和昵称可更新'
+    : '微信快捷登录，保存租赁进度'
 })
 
 const profileWarmLine = computed(() =>
@@ -158,7 +160,7 @@ function chooseDialogAvatar(event) {
   }
 }
 
-async function completeDialogLogin(phoneCode) {
+async function completeDialogLogin(phoneCode = '') {
   if (!hasAcceptedAgreement.value) {
     promptAcceptAgreement()
     return
@@ -188,19 +190,8 @@ async function completeDialogLogin(phoneCode) {
   }
 }
 
-function loginWithPhoneNumber(event) {
-  const detail = (event && event.detail) || {}
-  const errMsg = detail.errMsg || ''
-
-  if (errMsg && !errMsg.includes('ok')) {
-    uni.showToast({
-      title: '已取消手机号授权',
-      icon: 'none'
-    })
-    return
-  }
-
-  completeDialogLogin(detail.code || '')
+function loginWithWechatQuick() {
+  completeDialogLogin('')
 }
 
 function showReservedToast() {
@@ -316,7 +307,9 @@ function showReservedToast() {
           <text v-else class="profile-name">登录 / 注册</text>
           <text class="profile-subtitle">{{ profileSubtitle }}</text>
           <text class="profile-warm-line">{{ profileWarmLine }}</text>
+        </view>
 
+        <view class="profile-action">
           <button
             v-if="!user"
             class="login-button"
@@ -327,6 +320,10 @@ function showReservedToast() {
           >
             {{ isLoginLoading ? '登录中' : '立即登录' }}
           </button>
+          <view v-else class="profile-status">
+            <view class="profile-status-dot"></view>
+            <text>已登录</text>
+          </view>
         </view>
       </view>
     </view>
@@ -418,10 +415,9 @@ function showReservedToast() {
           :disabled="isLoginLoading"
           :loading="isLoginLoading"
           hover-class="dialog-login-button--hover"
-          open-type="getPhoneNumber"
-          @getphonenumber="loginWithPhoneNumber"
+          @tap="loginWithWechatQuick"
         >
-          手机号一键登录
+          微信快捷登录
         </button>
         <button
           v-else
@@ -429,7 +425,7 @@ function showReservedToast() {
           hover-class="dialog-login-button--hover"
           @tap="promptAcceptAgreement"
         >
-          手机号一键登录
+          微信快捷登录
         </button>
 
         <view class="agreement-row" @tap="toggleAgreement">
@@ -532,12 +528,26 @@ function showReservedToast() {
   z-index: 1;
   display: flex;
   align-items: center;
-  padding: 0 30rpx 30rpx;
+  min-height: 142rpx;
+  margin: 0 24rpx 24rpx;
+  padding: 20rpx 22rpx;
+  border: 1rpx solid rgba(255, 248, 237, 0.14);
+  border-radius: 20rpx;
+  background: rgba(255, 248, 237, 0.08);
+  box-sizing: border-box;
   text-align: left;
+  box-shadow:
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.12),
+    0 14rpx 34rpx rgba(12, 20, 14, 0.1);
 }
 
 .profile-body--guest {
-  padding-bottom: 30rpx;
+  background: linear-gradient(
+      90deg,
+      rgba(255, 248, 237, 0.12),
+      rgba(255, 248, 237, 0.05)
+    ),
+    rgba(255, 248, 237, 0.08);
 }
 
 .avatar-wrap {
@@ -595,7 +605,7 @@ function showReservedToast() {
   align-items: flex-start;
   min-width: 0;
   margin-left: 22rpx;
-  padding-right: 10rpx;
+  padding-right: 18rpx;
 }
 
 .profile-name {
@@ -635,11 +645,42 @@ function showReservedToast() {
   line-height: 32rpx;
 }
 
+.profile-action {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 154rpx;
+}
+
+.profile-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52rpx;
+  padding: 0 18rpx;
+  border: 1rpx solid rgba(224, 237, 221, 0.24);
+  border-radius: 999rpx;
+  background: rgba(18, 31, 23, 0.18);
+  color: rgba(255, 248, 237, 0.86);
+  font-size: 22rpx;
+  font-weight: 780;
+  line-height: 52rpx;
+}
+
+.profile-status-dot {
+  width: 10rpx;
+  height: 10rpx;
+  margin-right: 8rpx;
+  border-radius: 50%;
+  background: #dfe9df;
+  box-shadow: 0 0 0 5rpx rgba(223, 233, 223, 0.13);
+}
+
 .login-button {
-  align-self: flex-start;
-  width: 188rpx;
+  width: 172rpx;
   height: 58rpx;
-  margin: 14rpx 0 0;
+  margin: 0;
   padding: 0;
   border: 1rpx solid rgba(229, 242, 225, 0.72);
   border-radius: 14rpx;
