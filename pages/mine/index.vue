@@ -39,9 +39,7 @@ const profileSubtitle = computed(() => {
     return '资料保存中'
   }
 
-  return user.value
-    ? '已登录，点击头像和昵称可更新'
-    : '微信快捷登录，保存租赁进度'
+  return user.value ? '点击头像和昵称可更新' : '微信快捷登录，联系客服很方便哦'
 })
 
 const profileWarmLine = computed(() =>
@@ -553,7 +551,8 @@ function handleMenuTap(item) {
 }
 
 .profile-body--guest {
-  background: linear-gradient(
+  background:
+    linear-gradient(
       90deg,
       rgba(255, 248, 237, 0.12),
       rgba(255, 248, 237, 0.05)
