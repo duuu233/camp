@@ -1,15 +1,5 @@
 <script setup>
-import CampTabBar from '../../components/CampTabBar.vue'
 import CustomerServiceButton from '../../components/CustomerServiceButton.vue'
-import {
-  logImageRenderEvent,
-  useCapsuleSafeArea,
-  useCloudImageUrl
-} from '../../composables/useCloudImageUrl.js'
-import { brand } from '../../data/campData.js'
-
-const capsuleSafeAreaStyle = useCapsuleSafeArea()
-const logoImage = useCloudImageUrl(() => brand.logos.mark)
 
 const quickNotes = [
   '默认价格为租借 24 小时的金额',
@@ -80,47 +70,11 @@ const ruleSections = [
     ]
   }
 ]
-
-function logRentalImageEvent(scope, rawSrc, resolvedSrc, event) {
-  logImageRenderEvent(`Rental:${scope}`, rawSrc, resolvedSrc, event)
-}
-
-function goBack() {
-  const pages = typeof getCurrentPages === 'function' ? getCurrentPages() : []
-
-  if (pages.length > 1) {
-    uni.navigateBack()
-    return
-  }
-
-  uni.reLaunch({
-    url: '/pages/mine/index'
-  })
-}
 </script>
 
 <template>
-  <view class="page" :style="capsuleSafeAreaStyle">
-    <view class="status-space"></view>
-
+  <view class="page">
     <view class="page-head">
-      <view class="head-top">
-        <button class="back-button" hover-class="back-button--hover" @tap="goBack">
-          返回
-        </button>
-        <view class="head-brand">
-          <image
-            class="head-logo"
-            :src="logoImage"
-            mode="aspectFit"
-            @load="logRentalImageEvent('head-logo', brand.logos.mark, logoImage, $event)"
-            @error="logRentalImageEvent('head-logo', brand.logos.mark, logoImage, $event)"
-          />
-          <text class="head-brand-name">暮山川</text>
-        </view>
-        <CustomerServiceButton label="咨询" variant="ghost" compact />
-      </view>
-
       <view class="head-copy">
         <text class="head-kicker">RENTAL GUIDE</text>
         <text class="head-title">租赁说明</text>
@@ -160,7 +114,6 @@ function goBack() {
       <CustomerServiceButton label="微信客服" variant="solid" />
     </view>
 
-    <CampTabBar active="rental" />
   </view>
 </template>
 
@@ -168,79 +121,22 @@ function goBack() {
 .page {
   min-height: 100vh;
   overflow-x: hidden;
-  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(48rpx + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 86% 0%, rgba(213, 184, 124, 0.2), transparent 27%),
     radial-gradient(circle at 12% 18%, rgba(82, 112, 88, 0.13), transparent 25%),
     linear-gradient(180deg, #fbfaf7 0%, #f2f5ef 100%);
 }
 
-.status-space {
-  height: var(--capsule-reserved-height, 174rpx);
-}
-
 .page-head {
   padding-bottom: 18rpx;
-}
-
-.head-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: var(--capsule-button-height, 64rpx);
-  margin-top: var(--capsule-after-gap, 28rpx);
-  padding: 0 30rpx;
-}
-
-.back-button {
-  flex: 0 0 auto;
-  height: var(--capsule-button-height, 64rpx);
-  min-height: 56rpx;
-  margin: 0;
-  padding: 0 20rpx;
-  border: 1rpx solid rgba(34, 61, 45, 0.14);
-  border-radius: 16rpx;
-  background: rgba(255, 255, 255, 0.74);
-  color: #223d2d;
-  font-size: 24rpx;
-  font-weight: 800;
-  line-height: var(--capsule-button-height, 64rpx);
-}
-
-.back-button::after {
-  border: 0;
-}
-
-.back-button--hover {
-  opacity: 0.84;
-}
-
-.head-brand {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-  padding: 0 16rpx;
-}
-
-.head-logo {
-  width: 44rpx;
-  height: 44rpx;
-}
-
-.head-brand-name {
-  margin-left: 10rpx;
-  color: #223d2d;
-  font-size: 30rpx;
-  font-weight: 860;
-  line-height: 36rpx;
 }
 
 .head-copy {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: 24rpx 30rpx 0;
+  padding: 32rpx 30rpx 0;
 }
 
 .head-kicker {

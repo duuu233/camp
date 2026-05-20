@@ -2,6 +2,7 @@
 import { computed, shallowRef, watch } from 'vue'
 import CampTabBar from '../../components/CampTabBar.vue'
 import CustomerServiceButton from '../../components/CustomerServiceButton.vue'
+import PhoneCallButton from '../../components/PhoneCallButton.vue'
 import PickupLocationCard from '../../components/PickupLocationCard.vue'
 import {
   logImageRenderEvent,
@@ -13,7 +14,8 @@ import { brand, profileGroups } from '../../data/campData.js'
 
 const capsuleSafeAreaStyle = useCapsuleSafeArea()
 const logoSrc = useCloudImageUrl(() => brand.logos.white)
-const defaultAvatarSrc = '/static/user.png'
+const avatarFallbackRawSrc = brand.logos.mark
+const avatarFallbackSrc = useCloudImageUrl(() => avatarFallbackRawSrc)
 const {
   user,
   isLoginLoading,
@@ -31,7 +33,7 @@ const hasAcceptedAgreement = shallowRef(false)
 
 const avatarSrc = useCloudImageUrl(() => user.value && user.value.avatar)
 const dialogAvatarSrc = useCloudImageUrl(
-  () => dialogAvatar.value || brand.logos.mark
+  () => dialogAvatar.value || avatarFallbackRawSrc
 )
 
 const profileSubtitle = computed(() => {
@@ -93,9 +95,9 @@ function toggleAgreement() {
 }
 
 function showAgreement(type) {
-  uni.showToast({
-    title: type === 'privacy' ? '隐私政策内容预留' : '用户协议内容预留',
-    icon: 'none'
+  uni.navigateTo({
+    url:
+      type === 'privacy' ? '/pages/agreement/privacy' : '/pages/agreement/user'
   })
 }
 
@@ -194,7 +196,7 @@ function loginWithWechatQuick() {
 
 function showReservedToast() {
   uni.showToast({
-    title: '内容预留',
+    title: '敬请期待',
     icon: 'none'
   })
 }
@@ -204,6 +206,16 @@ function handleMenuTap(item) {
     uni.navigateTo({
       url: '/pages/rental/index'
     })
+    return
+  }
+
+  if (item.id === 'agreement') {
+    showAgreement('user')
+    return
+  }
+
+  if (item.id === 'privacy') {
+    showAgreement('privacy')
     return
   }
 
@@ -257,21 +269,21 @@ function handleMenuTap(item) {
             <image
               v-else
               class="avatar-mark"
-              :src="defaultAvatarSrc"
+              :src="avatarFallbackSrc"
               mode="aspectFit"
               @load="
                 logMineImageEvent(
                   'avatar-default',
-                  defaultAvatarSrc,
-                  defaultAvatarSrc,
+                  avatarFallbackRawSrc,
+                  avatarFallbackSrc,
                   $event
                 )
               "
               @error="
                 logMineImageEvent(
                   'avatar-default',
-                  defaultAvatarSrc,
-                  defaultAvatarSrc,
+                  avatarFallbackRawSrc,
+                  avatarFallbackSrc,
                   $event
                 )
               "
@@ -280,21 +292,21 @@ function handleMenuTap(item) {
           <image
             v-else
             class="avatar-mark"
-            :src="defaultAvatarSrc"
+            :src="avatarFallbackSrc"
             mode="aspectFit"
             @load="
               logMineImageEvent(
                 'guest-avatar',
-                defaultAvatarSrc,
-                defaultAvatarSrc,
+                avatarFallbackRawSrc,
+                avatarFallbackSrc,
                 $event
               )
             "
             @error="
               logMineImageEvent(
                 'guest-avatar',
-                defaultAvatarSrc,
-                defaultAvatarSrc,
+                avatarFallbackRawSrc,
+                avatarFallbackSrc,
                 $event
               )
             "
@@ -345,7 +357,10 @@ function handleMenuTap(item) {
           确认套餐、档期、配送范围、加配布置和团建方案。
         </text>
       </view>
-      <CustomerServiceButton label="联系微信客服" variant="solid" />
+      <view class="service-actions">
+        <CustomerServiceButton label="微信客服" variant="solid" compact />
+        <PhoneCallButton label="客服热线" variant="outline" compact />
+      </view>
     </view>
 
     <view class="pickup-panel">
@@ -389,7 +404,7 @@ function handleMenuTap(item) {
             @load="
               logMineImageEvent(
                 'dialog-avatar',
-                dialogAvatar || brand.logos.mark,
+                dialogAvatar || avatarFallbackRawSrc,
                 dialogAvatarSrc,
                 $event
               )
@@ -397,7 +412,7 @@ function handleMenuTap(item) {
             @error="
               logMineImageEvent(
                 'dialog-avatar',
-                dialogAvatar || brand.logos.mark,
+                dialogAvatar || avatarFallbackRawSrc,
                 dialogAvatarSrc,
                 $event
               )
@@ -606,6 +621,8 @@ function handleMenuTap(item) {
 
 .avatar-mark {
   box-sizing: border-box;
+  /* padding: 18rpx;
+  opacity: 0.94; */
 }
 
 .profile-copy {
@@ -741,6 +758,14 @@ function handleMenuTap(item) {
   flex-direction: column;
   min-width: 0;
   padding-right: 20rpx;
+}
+
+.service-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 12rpx;
+  width: 176rpx;
 }
 
 .panel-kicker {
@@ -900,15 +925,9 @@ function handleMenuTap(item) {
   height: 148rpx;
   margin: 76rpx 0 0;
   padding: 0;
-  border: 1rpx solid rgba(34, 61, 45, 0.12);
+
   border-radius: 22rpx;
-  background:
-    linear-gradient(
-      180deg,
-      var(--mine-theme-green-pale) 0%,
-      var(--mine-theme-green-soft) 100%
-    ),
-    var(--mine-theme-green-soft);
+
   line-height: 1;
   box-shadow:
     inset 0 2rpx 0 rgba(255, 255, 255, 0.7),

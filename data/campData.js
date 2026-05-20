@@ -20,6 +20,12 @@ export const brand = {
     white: cloudAsset('logo-white.png'),
     wordmarkWhite: cloudAsset('logo-wordmark-white.png'),
     full: cloudAsset('logo-white.png')
+  },
+  contacts: {
+    developerName: '刘鼎聪',
+    phone: '19217779594',
+    email: 'ace.liu0502@gmail.com',
+    address: '广西南宁市良庆区良庆镇良兴路18号'
   }
 }
 

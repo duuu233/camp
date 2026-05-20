@@ -21,7 +21,6 @@ import {
 
 const featuredPackages = bbqPackages.slice(0, 4)
 const capsuleSafeAreaStyle = useCapsuleSafeArea()
-const brandMarkImage = useCloudImageUrl(() => brand.logos.mark)
 const heroLogoImage = useCloudImageUrl(() => brand.logos.white)
 const heroPoster = useCloudImageUrl(() => hero.poster)
 const housekeepingImage = useCloudImageUrl(() => housekeepingRules.image)
@@ -61,18 +60,15 @@ function showToast(title) {
     <view class="topbar">
       <view class="brand-lockup">
         <view class="brand-title-row">
-          <image
-            class="brand-mark"
-            :src="brandMarkImage"
-            mode="aspectFit"
-            @load="logHomeImageEvent('brand-logo', brand.logos.mark, brandMarkImage, $event)"
-            @error="logHomeImageEvent('brand-logo', brand.logos.mark, brandMarkImage, $event)"
-          />
           <text class="brand-name">{{ brand.name }}</text>
         </view>
         <text class="brand-tagline">{{ brand.tagline }}</text>
       </view>
-      <button class="city-pill" hover-class="pill-hover" @tap="showToast('当前城市：南宁市')">
+      <button
+        class="city-pill"
+        hover-class="pill-hover"
+        @tap="showToast('当前城市：南宁市')"
+      >
         {{ brand.city }}
       </button>
     </view>
@@ -93,8 +89,22 @@ function showToast(title) {
           class="hero-logo"
           :src="heroLogoImage"
           mode="aspectFit"
-          @load="logHomeImageEvent('hero-logo', brand.logos.white, heroLogoImage, $event)"
-          @error="logHomeImageEvent('hero-logo', brand.logos.white, heroLogoImage, $event)"
+          @load="
+            logHomeImageEvent(
+              'hero-logo',
+              brand.logos.white,
+              heroLogoImage,
+              $event
+            )
+          "
+          @error="
+            logHomeImageEvent(
+              'hero-logo',
+              brand.logos.white,
+              heroLogoImage,
+              $event
+            )
+          "
         />
         <text class="hero-eyebrow">{{ hero.eyebrow }}</text>
         <text class="hero-title">{{ hero.title }}</text>
@@ -105,7 +115,11 @@ function showToast(title) {
           }}</text>
         </view>
         <view class="hero-actions">
-          <button class="primary-action" hover-class="primary-action--hover" @tap="goPackages">
+          <button
+            class="primary-action"
+            hover-class="primary-action--hover"
+            @tap="goPackages"
+          >
             查看套餐
           </button>
           <CustomerServiceButton label="问档期" variant="light" />
@@ -114,16 +128,33 @@ function showToast(title) {
     </view>
 
     <view class="content">
-      <SectionTitle title="精选 BBQ 套餐" subtitle="人数、炉具、桌椅、天幕和氛围灯一套配齐" action-label="全部" @action="goPackages" />
+      <SectionTitle
+        title="精选 BBQ 套餐"
+        subtitle="人数、炉具、桌椅、天幕和氛围灯一套配齐"
+        action-label="全部"
+        @action="goPackages"
+      />
       <scroll-view class="package-scroll" scroll-x enable-flex>
         <view class="package-row">
-          <PackagePosterCard v-for="item in featuredPackages" :key="item.id" :item="item" compact />
+          <PackagePosterCard
+            v-for="item in featuredPackages"
+            :key="item.id"
+            :item="item"
+            compact
+          />
         </view>
       </scroll-view>
 
-      <SectionTitle title="租赁服务" subtitle="适合年轻朋友聚会、女生小团体、亲子家庭和公司团建" />
+      <SectionTitle
+        title="租赁服务"
+        subtitle="适合年轻朋友聚会、女生小团体、亲子家庭和公司团建"
+      />
       <view class="service-grid">
-        <view v-for="service in serviceCards" :key="service.id" class="service-card">
+        <view
+          v-for="service in serviceCards"
+          :key="service.id"
+          class="service-card"
+        >
           <text class="service-badge">{{ service.badge }}</text>
           <text class="service-title">{{ service.title }}</text>
           <text class="service-subtitle">{{ service.subtitle }}</text>
@@ -133,8 +164,12 @@ function showToast(title) {
       <view class="housekeeping-card">
         <view class="housekeeping-head">
           <view class="housekeeping-copy">
-            <text class="housekeeping-title">{{ housekeepingRules.title }}</text>
-            <text class="housekeeping-subtitle">{{ housekeepingRules.subtitle }}</text>
+            <text class="housekeeping-title">{{
+              housekeepingRules.title
+            }}</text>
+            <text class="housekeeping-subtitle">{{
+              housekeepingRules.subtitle
+            }}</text>
           </view>
           <button
             class="guide-button"
@@ -148,8 +183,22 @@ function showToast(title) {
           class="housekeeping-image"
           :src="housekeepingImage"
           mode="aspectFit"
-          @load="logHomeImageEvent('housekeeping-rules', housekeepingRules.image, housekeepingImage, $event)"
-          @error="logHomeImageEvent('housekeeping-rules', housekeepingRules.image, housekeepingImage, $event)"
+          @load="
+            logHomeImageEvent(
+              'housekeeping-rules',
+              housekeepingRules.image,
+              housekeepingImage,
+              $event
+            )
+          "
+          @error="
+            logHomeImageEvent(
+              'housekeeping-rules',
+              housekeepingRules.image,
+              housekeepingImage,
+              $event
+            )
+          "
           @tap="previewHousekeepingRules"
         />
       </view>
@@ -158,9 +207,18 @@ function showToast(title) {
         <PickupLocationCard title="自提取装点" />
       </view>
 
-      <SectionTitle title="怎么租" subtitle="从选择套餐到取还装备，按约定时间轻松完成" action-label="说明" @action="goRentalGuide" />
+      <SectionTitle
+        title="怎么租"
+        subtitle="从选择套餐到取还装备，按约定时间轻松完成"
+        action-label="说明"
+        @action="goRentalGuide"
+      />
       <view class="step-card">
-        <view v-for="(step, index) in rentalSteps" :key="step.id" class="step-row">
+        <view
+          v-for="(step, index) in rentalSteps"
+          :key="step.id"
+          class="step-row"
+        >
           <view class="step-index">{{ index + 1 }}</view>
           <view class="step-copy">
             <text class="step-title">{{ step.title }}</text>
@@ -180,12 +238,16 @@ function showToast(title) {
   overflow-x: hidden;
   padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
   background:
-    radial-gradient(circle at 16% 0%,
+    radial-gradient(
+      circle at 16% 0%,
       rgba(213, 184, 124, 0.2),
-      transparent 26%),
-    radial-gradient(circle at 88% 12%,
+      transparent 26%
+    ),
+    radial-gradient(
+      circle at 88% 12%,
       rgba(82, 112, 88, 0.16),
-      transparent 28%),
+      transparent 28%
+    ),
     linear-gradient(180deg, #fbfaf7 0%, #f1f4ef 52%, #f8f5ee 100%);
 }
 
@@ -203,13 +265,26 @@ function showToast(title) {
 }
 
 .brand-lockup {
+  position: relative;
   display: flex;
   flex-direction: column;
   flex: 1;
   justify-content: center;
   height: var(--capsule-button-height, 64rpx);
   min-width: 0;
-  padding-right: 18rpx;
+  padding-left: 18rpx;
+  padding-right: 22rpx;
+}
+
+.brand-lockup::before {
+  position: absolute;
+  top: 8rpx;
+  bottom: 8rpx;
+  left: 0;
+  width: 6rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(180deg, #d7ae58, #223d2d);
+  content: '';
 }
 
 .brand-title-row {
@@ -218,40 +293,39 @@ function showToast(title) {
   min-width: 0;
 }
 
-.brand-mark {
-  flex: 0 0 auto;
-  width: 44rpx;
-  height: 44rpx;
-}
-
 .brand-name {
-  margin-left: 10rpx;
+  overflow: hidden;
   color: #1d2b20;
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: 900;
-  line-height: 36rpx;
+  line-height: 40rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .brand-tagline {
-  margin-top: 0;
+  margin-top: 2rpx;
+  overflow: hidden;
   color: #687164;
   font-size: 18rpx;
-  line-height: 22rpx;
+  line-height: 24rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .city-pill {
   flex: 0 0 auto;
-  height: var(--capsule-button-height, 64rpx);
+  height: 58rpx;
   min-height: 56rpx;
   margin: 0;
-  padding: 0 24rpx;
+  padding: 0 22rpx;
   border: 1rpx solid rgba(34, 61, 45, 0.12);
   border-radius: 999rpx;
   background: rgba(255, 255, 255, 0.78);
   color: #223d2d;
   font-size: 24rpx;
   font-weight: 760;
-  line-height: var(--capsule-button-height, 64rpx);
+  line-height: 58rpx;
   -webkit-backdrop-filter: blur(18rpx);
   backdrop-filter: blur(18rpx);
 }
@@ -288,10 +362,12 @@ function showToast(title) {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg,
+    linear-gradient(
+      180deg,
       rgba(16, 24, 18, 0.08) 0%,
       rgba(16, 24, 18, 0.58) 56%,
-      rgba(16, 24, 18, 0.9) 100%),
+      rgba(16, 24, 18, 0.9) 100%
+    ),
     linear-gradient(90deg, rgba(16, 24, 18, 0.62), rgba(16, 24, 18, 0.05));
 }
 
@@ -515,7 +591,7 @@ function showToast(title) {
   padding: 0 26rpx;
 }
 
-.step-row+.step-row::before {
+.step-row + .step-row::before {
   position: absolute;
   top: 0;
   right: 26rpx;
