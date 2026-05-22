@@ -125,8 +125,7 @@ async function saveWechatNickname(event) {
 
   try {
     await updateWechatProfile({ nickname })
-  } catch (error) {
-    console.error('保存微信昵称失败', error)
+  } catch {
     uni.showToast({
       title: '昵称保存失败',
       icon: 'none'
@@ -143,8 +142,7 @@ async function chooseWechatAvatar(event) {
 
   try {
     await updateWechatProfile({ avatar: avatarUrl })
-  } catch (error) {
-    console.error('保存微信头像失败', error)
+  } catch {
     uni.showToast({
       title: '头像保存失败',
       icon: 'none'
@@ -181,8 +179,7 @@ async function completeDialogLogin(phoneCode = '') {
       title: '已登录',
       icon: 'none'
     })
-  } catch (error) {
-    console.error('微信登录失败', error)
+  } catch {
     uni.showToast({
       title: loginError.value || '微信登录失败',
       icon: 'none'
@@ -202,6 +199,10 @@ function showReservedToast() {
 }
 
 function handleMenuTap(item) {
+  if (item.id === 'feedback') {
+    return
+  }
+
   if (item.id === 'guide') {
     uni.navigateTo({
       url: '/pages/rental/index'
@@ -372,13 +373,31 @@ function handleMenuTap(item) {
         v-for="item in group.items"
         :key="item.id"
         class="menu-row"
-        @tap="handleMenuTap(item)"
       >
-        <view class="menu-copy">
-          <text class="menu-label">{{ item.label }}</text>
-          <text class="menu-value">{{ item.value }}</text>
+        <button
+          v-if="item.id === 'feedback'"
+          class="menu-row-content menu-row-button"
+          hover-class="menu-row--hover"
+          open-type="contact"
+          show-message-card="true"
+          send-message-title="暮山川 BBQ 反馈建议"
+          send-message-path="/pages/mine/index"
+          :send-message-img="logoSrc"
+        >
+          <view class="menu-copy">
+            <text class="menu-label">{{ item.label }}</text>
+            <text class="menu-value">{{ item.value }}</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </button>
+
+        <view v-else class="menu-row-content" @tap="handleMenuTap(item)">
+          <view class="menu-copy">
+            <text class="menu-label">{{ item.label }}</text>
+            <text class="menu-value">{{ item.value }}</text>
+          </view>
+          <text class="menu-arrow">›</text>
         </view>
-        <text class="menu-arrow">›</text>
       </view>
     </view>
 
@@ -813,10 +832,33 @@ function handleMenuTap(item) {
 
 .menu-row {
   position: relative;
+  min-height: 108rpx;
+}
+
+.menu-row-content {
   display: flex;
   align-items: center;
+  width: 100%;
   min-height: 108rpx;
   padding: 0 28rpx;
+  box-sizing: border-box;
+}
+
+.menu-row-button {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  line-height: 1;
+  text-align: left;
+}
+
+.menu-row-button::after {
+  border: 0;
+}
+
+.menu-row--hover {
+  background: rgba(34, 61, 45, 0.04);
 }
 
 .menu-row + .menu-row::before {
