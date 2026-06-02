@@ -119,6 +119,17 @@ function openPickupLocation() {
     0 16rpx 42rpx rgba(30, 42, 32, 0.16);
 }
 
+/* 浅色「沙绿」配色：呼应品牌森林绿，比奶白色更显户外质感，又比深色克制 */
+.pickup-card--sage {
+  border-color: rgba(63, 95, 69, 0.16);
+  background:
+    linear-gradient(180deg, rgba(245, 250, 242, 0.98), rgba(228, 238, 223, 0.98)),
+    #eef4ea;
+  box-shadow:
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.9),
+    0 12rpx 34rpx rgba(34, 61, 45, 0.08);
+}
+
 .pickup-main {
   display: flex;
   align-items: flex-start;
@@ -251,6 +262,18 @@ function openPickupLocation() {
 
 .pickup-card--dark .pickup-action--solid {
   background: #fff8ed;
+  color: #223d2d;
+}
+
+.pickup-card--sage .pickup-action--ghost {
+  border-color: rgba(63, 95, 69, 0.2);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.72),
+      rgba(231, 240, 227, 0.62)
+    ),
+    rgba(255, 255, 255, 0.52);
   color: #223d2d;
 }
 

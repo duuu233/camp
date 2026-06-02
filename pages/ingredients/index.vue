@@ -8,7 +8,12 @@ import {
   useCapsuleSafeArea,
   useCloudImageUrl
 } from '../../composables/useCloudImageUrl.js'
-import { useShare } from '../../composables/useShare.js'
+import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
+import {
+  buildShareMessage,
+  buildShareTimeline,
+  enableShareMenu
+} from '../../composables/useShare.js'
 import { brand, ingredientPackages } from '../../data/campData.js'
 
 const brandName = '暮山川'
@@ -30,11 +35,15 @@ const ingredientPosters = ingredientPackages.map((item) => ({
   resolvedImage: useCloudImageUrl(() => item.image)
 }))
 
-useShare({
+const shareConfig = {
   title: '暮山川 BBQ 食材套餐 · 多人聚餐轻松配齐',
   path: '/pages/ingredients/index',
   imageUrl: ingredientPosters[0] && ingredientPosters[0].resolvedImage
-})
+}
+
+onShareAppMessage(() => buildShareMessage(shareConfig))
+onShareTimeline(() => buildShareTimeline(shareConfig))
+onShow(enableShareMenu)
 
 const visiblePosters = computed(() => {
   if (activeCategory.value === 'all') {

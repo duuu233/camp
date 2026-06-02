@@ -1,11 +1,20 @@
 <script setup>
+import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
 import CustomerServiceButton from '../../components/CustomerServiceButton.vue'
-import { useShare } from '../../composables/useShare.js'
+import {
+  buildShareMessage,
+  buildShareTimeline,
+  enableShareMenu
+} from '../../composables/useShare.js'
 
-useShare({
+const shareConfig = {
   title: '暮山川租赁说明 · 押金取还与清洁规则一看就懂',
   path: '/pages/rental/index'
-})
+}
+
+onShareAppMessage(() => buildShareMessage(shareConfig))
+onShareTimeline(() => buildShareTimeline(shareConfig))
+onShow(enableShareMenu)
 
 const quickNotes = [
   '默认价格为租借 24 小时的金额',

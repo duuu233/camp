@@ -9,7 +9,12 @@ import {
   useCapsuleSafeArea,
   useCloudImageUrl
 } from '../../composables/useCloudImageUrl.js'
-import { useShare } from '../../composables/useShare.js'
+import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
+import {
+  buildShareMessage,
+  buildShareTimeline,
+  enableShareMenu
+} from '../../composables/useShare.js'
 import { useWechatLogin } from '../../composables/useWechatLogin.js'
 import { brand, profileGroups } from '../../data/campData.js'
 
@@ -18,11 +23,15 @@ const logoSrc = useCloudImageUrl(() => brand.logos.white)
 const avatarFallbackRawSrc = brand.logos.mark
 const avatarFallbackSrc = useCloudImageUrl(() => avatarFallbackRawSrc)
 
-useShare({
+const shareConfig = {
   title: '暮山川 · 露营租赁 · 活动策划',
   path: '/pages/index/index',
   imageUrl: logoSrc
-})
+}
+
+onShareAppMessage(() => buildShareMessage(shareConfig))
+onShareTimeline(() => buildShareTimeline(shareConfig))
+onShow(enableShareMenu)
 const {
   user,
   isLoginLoading,
@@ -372,15 +381,11 @@ function handleMenuTap(item) {
     </view>
 
     <view class="pickup-panel">
-      <PickupLocationCard title="租赁设备自提地址" tone="dark" />
+      <PickupLocationCard title="租赁设备自提地址" tone="light" />
     </view>
 
     <view v-for="group in profileGroups" :key="group.id" class="menu-card">
-      <view
-        v-for="item in group.items"
-        :key="item.id"
-        class="menu-row"
-      >
+      <view v-for="item in group.items" :key="item.id" class="menu-row">
         <button
           v-if="item.id === 'feedback'"
           class="menu-row-content menu-row-button"
