@@ -4,6 +4,7 @@ import CampTabBar from '../../components/CampTabBar.vue'
 import CustomerServiceButton from '../../components/CustomerServiceButton.vue'
 import PhoneCallButton from '../../components/PhoneCallButton.vue'
 import PickupLocationCard from '../../components/PickupLocationCard.vue'
+import WechatQrDialog from '../../components/WechatQrDialog.vue'
 import {
   logImageRenderEvent,
   useCapsuleSafeArea,
@@ -45,6 +46,7 @@ const nicknameDraft = shallowRef('')
 const dialogNickname = shallowRef('')
 const dialogAvatar = shallowRef('')
 const showLoginDialog = shallowRef(false)
+const showWechatQrDialog = shallowRef(false)
 const hasAcceptedAgreement = shallowRef(false)
 
 const avatarSrc = useCloudImageUrl(() => user.value && user.value.avatar)
@@ -104,6 +106,14 @@ function closeLoginDialog() {
   }
 
   showLoginDialog.value = false
+}
+
+function openWechatQrDialog() {
+  showWechatQrDialog.value = true
+}
+
+function closeWechatQrDialog() {
+  showWechatQrDialog.value = false
 }
 
 function toggleAgreement() {
@@ -377,6 +387,13 @@ function handleMenuTap(item) {
       <view class="service-actions">
         <CustomerServiceButton label="微信客服" variant="solid" compact />
         <PhoneCallButton label="客服热线" variant="outline" compact />
+        <button
+          class="add-wechat-button"
+          hover-class="add-wechat-button--hover"
+          @tap="openWechatQrDialog"
+        >
+          加微信好友
+        </button>
       </view>
     </view>
 
@@ -500,6 +517,13 @@ function handleMenuTap(item) {
         </view>
       </view>
     </view>
+
+    <WechatQrDialog
+      :visible="showWechatQrDialog"
+      title="加客服微信"
+      desc="添加暮山川客服，咨询套餐、档期与配送布置"
+      @close="closeWechatQrDialog"
+    />
 
     <CampTabBar active="mine" />
   </view>
@@ -797,6 +821,37 @@ function handleMenuTap(item) {
   flex-direction: column;
   gap: 12rpx;
   width: 176rpx;
+}
+
+.add-wechat-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--capsule-button-height, 64rpx);
+  min-height: 56rpx;
+  margin: 0;
+  padding: 0 22rpx;
+  border: 1rpx solid rgba(197, 151, 62, 0.42);
+  border-radius: 14rpx;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(244, 231, 200, 0.92) 0%,
+      rgba(244, 231, 200, 0.6) 100%
+    ),
+    #fbf7ed;
+  color: #8a6428;
+  font-size: 24rpx;
+  font-weight: 850;
+  line-height: var(--capsule-button-height, 64rpx);
+}
+
+.add-wechat-button::after {
+  border: 0;
+}
+
+.add-wechat-button--hover {
+  opacity: 0.86;
 }
 
 .panel-kicker {
