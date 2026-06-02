@@ -10,6 +10,7 @@ import {
   useCapsuleSafeArea,
   useCloudImageUrl
 } from '../../composables/useCloudImageUrl.js'
+import { useShare } from '../../composables/useShare.js'
 import {
   bbqPackages,
   brand,
@@ -24,6 +25,12 @@ const capsuleSafeAreaStyle = useCapsuleSafeArea()
 const heroLogoImage = useCloudImageUrl(() => brand.logos.white)
 const heroPoster = useCloudImageUrl(() => hero.poster)
 const housekeepingImage = useCloudImageUrl(() => housekeepingRules.image)
+
+useShare({
+  title: '暮山川 · 户外 BBQ 装备租赁一站配齐',
+  path: '/pages/index/index',
+  imageUrl: heroPoster
+})
 
 function logHomeImageEvent(scope, rawSrc, resolvedSrc, event) {
   logImageRenderEvent(`Home:${scope}`, rawSrc, resolvedSrc, event)

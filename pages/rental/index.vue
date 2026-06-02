@@ -1,5 +1,11 @@
 <script setup>
 import CustomerServiceButton from '../../components/CustomerServiceButton.vue'
+import { useShare } from '../../composables/useShare.js'
+
+useShare({
+  title: '暮山川租赁说明 · 押金取还与清洁规则一看就懂',
+  path: '/pages/rental/index'
+})
 
 const quickNotes = [
   '默认价格为租借 24 小时的金额',

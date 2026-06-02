@@ -9,6 +9,7 @@ import {
   useCapsuleSafeArea,
   useCloudImageUrl
 } from '../../composables/useCloudImageUrl.js'
+import { useShare } from '../../composables/useShare.js'
 import { useWechatLogin } from '../../composables/useWechatLogin.js'
 import { brand, profileGroups } from '../../data/campData.js'
 
@@ -16,6 +17,12 @@ const capsuleSafeAreaStyle = useCapsuleSafeArea()
 const logoSrc = useCloudImageUrl(() => brand.logos.white)
 const avatarFallbackRawSrc = brand.logos.mark
 const avatarFallbackSrc = useCloudImageUrl(() => avatarFallbackRawSrc)
+
+useShare({
+  title: '暮山川 · 露营租赁 · 活动策划',
+  path: '/pages/index/index',
+  imageUrl: logoSrc
+})
 const {
   user,
   isLoginLoading,

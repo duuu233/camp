@@ -8,6 +8,7 @@ import {
   useCapsuleSafeArea,
   useCloudImageUrl
 } from '../../composables/useCloudImageUrl.js'
+import { useShare } from '../../composables/useShare.js'
 import { brand, ingredientPackages } from '../../data/campData.js'
 
 const brandName = '暮山川'
@@ -28,6 +29,12 @@ const ingredientPosters = ingredientPackages.map((item) => ({
   ...item,
   resolvedImage: useCloudImageUrl(() => item.image)
 }))
+
+useShare({
+  title: '暮山川 BBQ 食材套餐 · 多人聚餐轻松配齐',
+  path: '/pages/ingredients/index',
+  imageUrl: ingredientPosters[0] && ingredientPosters[0].resolvedImage
+})
 
 const visiblePosters = computed(() => {
   if (activeCategory.value === 'all') {
