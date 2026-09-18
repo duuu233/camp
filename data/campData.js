@@ -1,4 +1,3 @@
-export const cloudEnvId = 'cloudbase-d3gh9k47wa7fbd8bd'
 // Shared posters stay in the main package because the home page previews them.
 const sharedPosters = new Set(['package-2p', 'package-4p', 'package-4p-mahjong', 'package-6p'])
 

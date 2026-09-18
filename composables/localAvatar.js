@@ -26,13 +26,13 @@ export function removeLocalAvatar(value) {
   try { fileSystem().unlinkSync(value) } catch { /* Already removed. */ }
 }
 
-export async function persistLocalAvatar(openid, value) {
+export async function persistLocalAvatar(value) {
   const source = normalizeLocalImage(value)
   if (!source || source.startsWith('/static/') || ownedAvatar(source)) return readLocalAvatar(source)
   const fs = fileSystem()
   if (!fs || !wx.env?.USER_DATA_PATH) throw new Error('当前环境不支持保存本地头像')
   const extension = source.split('?')[0].match(/\.(png|jpe?g|webp)$/i)?.[1] || 'jpg'
-  const target = `${wx.env.USER_DATA_PATH}/camp-avatar-${encodeURIComponent(openid)}-${Date.now()}.${extension}`
+  const target = `${wx.env.USER_DATA_PATH}/camp-avatar-local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`
   await new Promise((resolve, reject) => fs.copyFile({
     srcPath: source,
     destPath: target,

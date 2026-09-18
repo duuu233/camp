@@ -35,13 +35,13 @@ test('avatar persists on device, missing file falls back, only owned files are r
     })
   }
   try {
-    const avatar = await persistLocalAvatar('user', 'http://tmp/avatar.png')
-    assert(avatar.startsWith('wxfile://usr/camp-avatar-user-'))
+    const avatar = await persistLocalAvatar('http://tmp/avatar.png')
+    assert(avatar.startsWith('wxfile://usr/camp-avatar-local-'))
     assert.equal(copies.length, 1)
     assert.equal(readLocalAvatar(avatar), avatar)
-    assert.equal(await persistLocalAvatar('user', avatar), avatar)
+    assert.equal(await persistLocalAvatar(avatar), avatar)
     assert.equal(copies.length, 1)
-    assert.equal(await persistLocalAvatar('user', 'cloud://old/avatar.png'), '')
+    assert.equal(await persistLocalAvatar('cloud://old/avatar.png'), '')
     assert.equal(readLocalAvatar('wxfile://tmp/expired.png'), '')
     removeLocalAvatar('/static/logo-mark.png')
     assert(files.has(avatar))

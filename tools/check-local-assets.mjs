@@ -25,6 +25,17 @@ const routes = [...config.pages.map(page => page.path), ...config.subPackages.fl
 routes.forEach(route => assert(fs.existsSync(path.join(root, route + '.vue')), `Missing route: ${route}`))
 const build = path.join(root, 'unpackage/dist/build/mp-weixin')
 const app = JSON.parse(fs.readFileSync(path.join(build, 'app.json'), 'utf8'))
+const project = JSON.parse(fs.readFileSync(path.join(build, 'project.config.json'), 'utf8'))
+assert(!app.copyToVersion && !app.cloudfunctionRoot && !project.cloudfunctionRoot, 'Cloud build configuration remains')
+const backendCalls = /(?:wx|uni)\s*\.\s*(?:cloud\b|login\s*\(|request\s*\(|uploadFile\s*\(|downloadFile\s*\(|connectSocket\s*\(|getUserProfile\s*\(|getPhoneNumber\s*\()/
+for (const directory of ['pages', 'components', 'composables', 'data']) {
+  for (const relative of fs.readdirSync(path.join(root, directory), { recursive: true })) {
+    if (!/\.(?:js|vue)$/.test(relative)) continue
+    const source = fs.readFileSync(path.join(root, directory, relative), 'utf8')
+    assert(!backendCalls.test(source), `Backend/network call in ${directory}/${relative}`)
+    assert(!/cloudEnvId|cloudbase-|wx-server-sdk|getphonenumber|useWechatLogin|useWechatCloud/.test(source), `Cloud/auth dependency in ${relative}`)
+  }
+}
 assert.deepEqual((app.subPackages || app.subpackages).map(pkg => pkg.root).sort(), config.subPackages.map(pkg => pkg.root).sort())
 const sizes = { main: 0, ...Object.fromEntries(config.subPackages.map(pkg => [pkg.root, 0])) }
 for (const relative of fs.readdirSync(build, { recursive: true })) {
@@ -35,7 +46,7 @@ for (const relative of fs.readdirSync(build, { recursive: true })) {
   sizes[pkg] += fs.statSync(file).size
   if (relative.endsWith('.js')) {
     const source = fs.readFileSync(file, 'utf8')
-    assert(!/getTempFileURL|\.uploadFile\(|\.downloadFile\(|tcb\.qcloud\.la|cloud:\/\//.test(source), `Cloud image dependency in ${relative}`)
+    assert(!/getTempFileURL|\.uploadFile\(|\.downloadFile\(|tcb\.qcloud\.la|cloud:\/\/|wx\.cloud|cloudbase-|quickLogin|wx-server-sdk/.test(source), `Cloud dependency in ${relative}`)
   }
 }
 for (const image of imagePaths) assert(fs.existsSync(path.join(build, image)), `Missing compiled image: ${image}`)
@@ -43,4 +54,4 @@ for (const [pkg, bytes] of Object.entries(sizes)) {
   console.log(`${pkg}: ${bytes} bytes (${(bytes / 1024 / 1024).toFixed(3)} MiB)`)
   assert(bytes < 2 * 1024 * 1024, `${pkg} exceeds 2 MiB`)
 }
-console.log(`PASS: ${imagePaths.size} local images, ${routes.length} routes, home image ownership, compiled assets and no cloud image APIs.`)
+console.log(`PASS: ${imagePaths.size} local images, ${routes.length} routes, image ownership, compiled assets and no backend/auth/network calls in application source.`)
