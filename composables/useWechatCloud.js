@@ -47,18 +47,3 @@ export async function callWechatCloudFunction({ name, data = {} }) {
     })
   })
 }
-
-export async function uploadWechatCloudFile({ cloudPath, filePath }) {
-  await ensureWechatCloudReady()
-
-  return new Promise((resolve, reject) => {
-    wx.cloud.uploadFile({
-      cloudPath,
-      filePath,
-      success: (res) => {
-        resolve(res.fileID || '')
-      },
-      fail: reject
-    })
-  })
-}

@@ -9,8 +9,8 @@ import {
   logImageRenderEvent,
   previewImageUrl,
   useCapsuleSafeArea,
-  useCloudImageUrl
-} from '../../composables/useCloudImageUrl.js'
+  useImageUrl
+} from '../../composables/useImageUrl.js'
 import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
 import {
   buildShareMessage,
@@ -26,8 +26,8 @@ import {
 
 const activeGroup = shallowRef('all')
 const capsuleSafeAreaStyle = useCapsuleSafeArea()
-const logoImage = useCloudImageUrl(() => brand.logos.mark)
-const equipmentImage = useCloudImageUrl(() => equipmentDetails.image)
+const logoImage = useImageUrl(() => brand.logos.mark)
+const equipmentImage = useImageUrl(() => equipmentDetails.image)
 
 const shareConfig = {
   title: '暮山川 BBQ 套餐 · 按人数和场景一套配齐',

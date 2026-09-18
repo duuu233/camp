@@ -8,8 +8,8 @@ import {
   logImageRenderEvent,
   previewImageUrl,
   useCapsuleSafeArea,
-  useCloudImageUrl
-} from '../../composables/useCloudImageUrl.js'
+  useImageUrl
+} from '../../composables/useImageUrl.js'
 import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
 import {
   buildShareMessage,
@@ -27,9 +27,9 @@ import {
 
 const featuredPackages = bbqPackages.slice(0, 4)
 const capsuleSafeAreaStyle = useCapsuleSafeArea()
-const heroLogoImage = useCloudImageUrl(() => brand.logos.white)
-const heroPoster = useCloudImageUrl(() => hero.poster)
-const housekeepingImage = useCloudImageUrl(() => housekeepingRules.image)
+const heroLogoImage = useImageUrl(() => brand.logos.white)
+const heroPoster = useImageUrl(() => hero.poster)
+const housekeepingImage = useImageUrl(() => housekeepingRules.image)
 
 const shareConfig = {
   title: '暮山川 · 户外 BBQ 装备租赁一站配齐',

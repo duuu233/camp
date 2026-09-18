@@ -1,6 +1,6 @@
 <script setup>
 import { brand } from '../data/campData.js'
-import { useCloudImageUrl } from '../composables/useCloudImageUrl.js'
+import { useImageUrl } from '../composables/useImageUrl.js'
 
 defineProps({
   label: {
@@ -17,7 +17,7 @@ defineProps({
   }
 })
 
-const messageImage = useCloudImageUrl(() => brand.logos.white)
+const messageImage = useImageUrl(() => brand.logos.white)
 </script>
 
 <template>

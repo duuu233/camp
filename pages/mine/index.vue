@@ -8,8 +8,8 @@ import WechatQrDialog from '../../components/WechatQrDialog.vue'
 import {
   logImageRenderEvent,
   useCapsuleSafeArea,
-  useCloudImageUrl
-} from '../../composables/useCloudImageUrl.js'
+  useImageUrl
+} from '../../composables/useImageUrl.js'
 import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
 import {
   buildShareMessage,
@@ -20,9 +20,9 @@ import { useWechatLogin } from '../../composables/useWechatLogin.js'
 import { brand, profileGroups } from '../../data/campData.js'
 
 const capsuleSafeAreaStyle = useCapsuleSafeArea()
-const logoSrc = useCloudImageUrl(() => brand.logos.white)
+const logoSrc = useImageUrl(() => brand.logos.white)
 const avatarFallbackRawSrc = brand.logos.mark
-const avatarFallbackSrc = useCloudImageUrl(() => avatarFallbackRawSrc)
+const avatarFallbackSrc = useImageUrl(() => avatarFallbackRawSrc)
 
 const shareConfig = {
   title: '暮山川 · 露营租赁 · 活动策划',
@@ -49,8 +49,8 @@ const showLoginDialog = shallowRef(false)
 const showWechatQrDialog = shallowRef(false)
 const hasAcceptedAgreement = shallowRef(false)
 
-const avatarSrc = useCloudImageUrl(() => user.value && user.value.avatar)
-const dialogAvatarSrc = useCloudImageUrl(
+const avatarSrc = useImageUrl(() => user.value && user.value.avatar)
+const dialogAvatarSrc = useImageUrl(
   () => dialogAvatar.value || avatarFallbackRawSrc
 )
 

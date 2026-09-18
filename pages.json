@@ -8,20 +8,6 @@
       }
     },
     {
-      "path": "pages/packages/index",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "套餐"
-      }
-    },
-    {
-      "path": "pages/ingredients/index",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "食材"
-      }
-    },
-    {
       "path": "pages/rental/index",
       "style": {
         "navigationBarTitleText": "租赁说明"
@@ -53,5 +39,31 @@
     "navigationBarBackgroundColor": "#FBFAF7",
     "backgroundColor": "#F2F5EF"
   },
-  "uniIdRouter": {}
+  "uniIdRouter": {},
+  "subPackages": [
+    {
+      "root": "pages/packages",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "套餐"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/ingredients",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "食材"
+          }
+        }
+      ]
+    }
+  ]
 }

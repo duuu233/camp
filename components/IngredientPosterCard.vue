@@ -4,8 +4,8 @@ import { brand } from '../data/campData.js'
 import {
   logImageRenderEvent,
   previewImageUrl,
-  useCloudImageUrl
-} from '../composables/useCloudImageUrl.js'
+  useImageUrl
+} from '../composables/useImageUrl.js'
 
 const props = defineProps({
   item: {
@@ -14,9 +14,9 @@ const props = defineProps({
   }
 })
 
-const posterImage = useCloudImageUrl(() => props.item.image)
-const detailImage = useCloudImageUrl(() => props.item.detailImage || '')
-const messageImage = useCloudImageUrl(() => brand.logos.white)
+const posterImage = useImageUrl(() => props.item.image)
+const detailImage = useImageUrl(() => props.item.detailImage || '')
+const messageImage = useImageUrl(() => brand.logos.white)
 const messageTitle = computed(() => `${brand.name} ${props.item.title} 食材咨询`)
 function logPosterImageEvent(event) {
   logImageRenderEvent(

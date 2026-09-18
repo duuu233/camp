@@ -1,8 +1,7 @@
 import { computed, onMounted, readonly, shallowRef } from 'vue'
-import {
-  callWechatCloudFunction,
-  uploadWechatCloudFile
-} from './useWechatCloud.js'
+import { callWechatCloudFunction } from './useWechatCloud.js'
+import { normalizeLocalImage } from './localImage.js'
+import { persistLocalAvatar, readLocalAvatar, removeLocalAvatar } from './localAvatar.js'
 
 const LOGIN_STORAGE_KEY = 'mushanchuan_wechat_login'
 const defaultNickname = '暮山川用户'
@@ -45,7 +44,7 @@ function normalizeLoginUser(payload) {
       typeof payload.nickname === 'string' && payload.nickname.trim()
         ? payload.nickname.trim()
         : defaultNickname,
-    avatar: typeof payload.avatar === 'string' ? payload.avatar : '',
+    avatar: readLocalAvatar(payload.avatar),
     phoneNumber:
       typeof payload.phoneNumber === 'string' ? payload.phoneNumber : '',
     loginAt: typeof payload.loginAt === 'number' ? payload.loginAt : Date.now()
@@ -59,37 +58,7 @@ function normalizeNickname(nickname) {
 }
 
 function normalizeAvatarUrl(avatar) {
-  return typeof avatar === 'string' ? avatar : ''
-}
-
-function getAvatarFileExtension(filePath) {
-  if (typeof filePath !== 'string') {
-    return 'jpg'
-  }
-
-  const cleanPath = filePath.split('?')[0]
-  const matched = cleanPath.match(/\.([a-z0-9]+)$/i)
-  const extension = matched ? matched[1].toLowerCase() : 'jpg'
-  return ['jpg', 'jpeg', 'png', 'webp'].includes(extension) ? extension : 'jpg'
-}
-
-async function uploadUserAvatar(openid, avatarUrl) {
-  if (
-    !avatarUrl ||
-    avatarUrl.startsWith('cloud://') ||
-    /^https?:\/\//.test(avatarUrl)
-  ) {
-    return avatarUrl
-  }
-
-  const extension = getAvatarFileExtension(avatarUrl)
-  const cloudPath = `user-avatars/${openid}/${Date.now()}.${extension}`
-  const fileID = await uploadWechatCloudFile({
-    cloudPath,
-    filePath: avatarUrl
-  })
-
-  return fileID || avatarUrl
+  return normalizeLocalImage(avatar)
 }
 
 function readStoredUser() {
@@ -189,6 +158,7 @@ export function useWechatLogin() {
   }
 
   function logout() {
+    removeLocalAvatar(currentUser.value?.avatar)
     currentUser.value = null
     loginError.value = ''
     removeStoredUser()
@@ -208,7 +178,7 @@ export function useWechatLogin() {
     try {
       const avatar =
         'avatar' in profile
-          ? await uploadUserAvatar(
+          ? await persistLocalAvatar(
               currentUser.value.openid,
               normalizeAvatarUrl(profile.avatar)
             )
@@ -226,6 +196,9 @@ export function useWechatLogin() {
         throw new Error('用户信息无效')
       }
 
+      if (currentUser.value.avatar !== nextUser.avatar) {
+        removeLocalAvatar(currentUser.value.avatar)
+      }
       currentUser.value = nextUser
       writeStoredUser(nextUser)
       return nextUser

@@ -3,8 +3,8 @@ import { brand } from '../data/campData.js'
 import {
   logImageRenderEvent,
   previewImageUrl,
-  useCloudImageUrl
-} from '../composables/useCloudImageUrl.js'
+  useImageUrl
+} from '../composables/useImageUrl.js'
 
 const props = defineProps({
   item: {
@@ -18,8 +18,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['contact'])
-const posterImage = useCloudImageUrl(() => props.item.image)
-const messageImage = useCloudImageUrl(() => brand.logos.white)
+const posterImage = useImageUrl(() => props.item.image)
+const messageImage = useImageUrl(() => brand.logos.white)
 
 function logPackagePosterEvent(event) {
   logImageRenderEvent(

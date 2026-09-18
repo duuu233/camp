@@ -1,5 +1,5 @@
-import { onMounted, shallowRef, watch } from 'vue'
-import { ensureWechatCloudReady } from './useWechatCloud.js'
+import { computed, onMounted, shallowRef } from 'vue'
+import { normalizeLocalImage } from './localImage.js'
 
 const capsuleFallbackStyle = {
   '--status-bar-height': '88rpx',
@@ -30,95 +30,9 @@ function readSource(source) {
   return source
 }
 
-function getCloudFallbackUrl(fileId) {
-  if (typeof fileId !== 'string') {
-    return ''
-  }
-
-  const normalizedFileId = fileId.replace(/\\/g, '/')
-  const fileName = normalizedFileId.split('/').filter(Boolean).pop()
-
-  if (!fileName) {
-    return ''
-  }
-
-  if (normalizedFileId.includes('/Ingredients/')) {
-    return `/static/Ingredients/${fileName}`
-  }
-
-  return `/static/${fileName}`
-}
-
-function resolveCloudFallback(fileId) {
-  return getCloudFallbackUrl(fileId)
-}
-
-export function resolveCloudImageUrl(fileId) {
-  if (!fileId) {
-    return Promise.resolve('')
-  }
-
-  if (typeof fileId !== 'string' || !fileId.startsWith('cloud://')) {
-    return Promise.resolve(fileId)
-  }
-
-  // #ifdef MP-WEIXIN
-  const hasWx = typeof wx !== 'undefined'
-  const hasWxCloud = hasWx && !!wx.cloud
-
-  if (!hasWxCloud) {
-    return Promise.resolve(resolveCloudFallback(fileId))
-  }
-
-  return ensureWechatCloudReady()
-    .then(
-      () =>
-        new Promise(resolve => {
-          wx.cloud.getTempFileURL({
-            fileList: [fileId],
-            success: res => {
-              const file = res.fileList && res.fileList[0]
-              const resolvedUrl =
-                file && file.status === 0 ? file.tempFileURL : ''
-
-              if (resolvedUrl) {
-                resolve(resolvedUrl)
-                return
-              }
-
-              resolve(resolveCloudFallback(fileId))
-            },
-            fail: error => {
-              void error
-              resolve(resolveCloudFallback(fileId))
-            }
-          })
-        })
-    )
-    .catch(error => {
-      void error
-      return resolveCloudFallback(fileId)
-    })
-  // #endif
-
-  // #ifndef MP-WEIXIN
-  return Promise.resolve(fileId)
-  // #endif
-}
-
-export function useCloudImageUrl(source) {
-  const imageUrl = shallowRef('')
-
-  watch(
-    () => readSource(source),
-    async fileId => {
-      const resolvedUrl = await resolveCloudImageUrl(fileId)
-      imageUrl.value = resolvedUrl
-    },
-    { immediate: true }
-  )
-
-  return imageUrl
+// Local assets resolve synchronously, including share cards on the first render.
+export function useImageUrl(source) {
+  return computed(() => normalizeLocalImage(readSource(source)))
 }
 
 export function previewImageUrl(current, urls) {

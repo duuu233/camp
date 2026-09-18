@@ -6,8 +6,8 @@ import {
   logImageRenderEvent,
   previewImageUrl,
   useCapsuleSafeArea,
-  useCloudImageUrl
-} from '../../composables/useCloudImageUrl.js'
+  useImageUrl
+} from '../../composables/useImageUrl.js'
 import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
 import {
   buildShareMessage,
@@ -19,8 +19,8 @@ import { brand, ingredientPackages } from '../../data/campData.js'
 const brandName = '暮山川'
 const activeCategory = shallowRef('all')
 const capsuleSafeAreaStyle = useCapsuleSafeArea()
-const logoImage = useCloudImageUrl(() => brand.logos.mark)
-const messageImage = useCloudImageUrl(() => brand.logos.white)
+const logoImage = useImageUrl(() => brand.logos.mark)
+const messageImage = useImageUrl(() => brand.logos.white)
 const messageTitle = `${brandName} BBQ 食材套餐咨询`
 
 const categories = [
@@ -32,7 +32,7 @@ const categories = [
 
 const ingredientPosters = ingredientPackages.map((item) => ({
   ...item,
-  resolvedImage: useCloudImageUrl(() => item.image)
+  resolvedImage: useImageUrl(() => item.image)
 }))
 
 const shareConfig = {

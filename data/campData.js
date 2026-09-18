@@ -1,25 +1,30 @@
 export const cloudEnvId = 'cloudbase-d3gh9k47wa7fbd8bd'
-export const cloudStoragePrefix =
-  'cloud://cloudbase-d3gh9k47wa7fbd8bd.636c-cloudbase-d3gh9k47wa7fbd8bd-1433444569/'
+// Shared posters stay in the main package because the home page previews them.
+const sharedPosters = new Set(['package-2p', 'package-4p', 'package-4p-mahjong', 'package-6p'])
 
-export function cloudAsset(fileName) {
-  return `${cloudStoragePrefix}${fileName}`
+export function localAsset(fileName) {
+  const name = fileName.replace(/\.png$/, '')
+  if (name.startsWith('logo-')) return `/static/${name}.png`
+  const directory = sharedPosters.has(name) || name === 'housekeeping-rules'
+    ? '/static/posters'
+    : '/pages/packages/static'
+  return `${directory}/${name}.jpg`
 }
 
 export function ingredientAsset(fileName) {
-  return `${cloudStoragePrefix}Ingredients/${fileName}`
+  return `/pages/ingredients/static/${fileName.replace(/\.png$/, '.jpg')}`
 }
 
 export const brand = {
   name: '暮山川',
   tagline: '露营租赁 · 活动策划',
   city: '南宁市',
-  logo: cloudAsset('logo-mark.png'),
+  logo: localAsset('logo-mark.png'),
   logos: {
-    mark: cloudAsset('logo-mark.png'),
-    white: cloudAsset('logo-white.png'),
-    wordmarkWhite: cloudAsset('logo-wordmark-white.png'),
-    full: cloudAsset('logo-white.png')
+    mark: localAsset('logo-mark.png'),
+    white: localAsset('logo-white.png'),
+    wordmarkWhite: localAsset('logo-wordmark-white.png'),
+    full: localAsset('logo-white.png')
   },
   contacts: {
     developerName: '刘鼎聪',
@@ -34,20 +39,20 @@ export const hero = {
   title: '把户外 BBQ 的氛围感，交给暮山川',
   subtitle:
     '烧烤炉、天幕桌椅、露营灯、燃气和聚会套餐一次配齐，适合闺蜜小聚、情侣约会、家庭露营和公司团建。',
-  poster: cloudAsset('package-4p.png'),
+  poster: localAsset('package-4p.png'),
   chips: ['自驾可取', '同城配送', '套餐齐全']
 }
 
 export const equipmentDetails = {
   title: '设备单租价目',
   subtitle: '天幕、桌椅、炉具、灯具等单项设备价格一图查看，可按活动人数加配。',
-  image: cloudAsset('equipment-details.png')
+  image: localAsset('equipment-details.png')
 }
 
 export const housekeepingRules = {
   title: '暮山川露营专属管家交付卡',
   subtitle: '交付、搭建、取还和售后服务说明，租赁前可先放大查看。',
-  image: cloudAsset('housekeeping-rules.png')
+  image: localAsset('housekeeping-rules.png')
 }
 
 export const pickupLocation = {
@@ -76,7 +81,7 @@ export const bbqPackages = [
     scene: '情侣约会 / 闺蜜小聚',
     price: '¥58/日',
     longRent: '长租低至 ¥48/日',
-    image: cloudAsset('package-2p.png'),
+    image: localAsset('package-2p.png'),
     features: ['天幕', '桌椅', '卡式炉', '烤盘', '露营灯', '燃气']
   },
   {
@@ -87,7 +92,7 @@ export const bbqPackages = [
     scene: '好友聚会 / 周末露营',
     price: '¥68/日',
     longRent: '长租低至 ¥58/日',
-    image: cloudAsset('package-4p.png'),
+    image: localAsset('package-4p.png'),
     features: ['大天幕', '四椅', '蛋卷桌', '炉具', '烤盘', '燃气']
   },
   {
@@ -98,7 +103,7 @@ export const bbqPackages = [
     scene: '下午茶 / 麻将 / 烧烤',
     price: '看海报报价',
     longRent: '桌椅炉具与麻将桌组合',
-    image: cloudAsset('package-4p-mahjong.png'),
+    image: localAsset('package-4p-mahjong.png'),
     features: ['麻将桌', '烧烤炉', '天幕', '桌椅', '露营灯']
   },
   {
@@ -109,7 +114,7 @@ export const bbqPackages = [
     scene: '生日派对 / 好友局',
     price: '看海报报价',
     longRent: '适合半日到整日活动',
-    image: cloudAsset('package-6p.png'),
+    image: localAsset('package-6p.png'),
     features: ['多人桌椅', '烧烤套装', '氛围灯', '燃气', '收纳箱']
   },
   {
@@ -120,7 +125,7 @@ export const bbqPackages = [
     scene: '小型团建 / 家庭聚会',
     price: '看海报报价',
     longRent: '可加配食材与活动物料',
-    image: cloudAsset('package-8p.png'),
+    image: localAsset('package-8p.png'),
     features: ['大天幕', '多人桌椅', '烧烤炉', '照明', '燃气']
   },
   {
@@ -131,7 +136,7 @@ export const bbqPackages = [
     scene: '部门聚会 / 露营派对',
     price: '看海报报价',
     longRent: '多人活动推荐',
-    image: cloudAsset('package-10p.png'),
+    image: localAsset('package-10p.png'),
     features: ['天幕组', '多套桌椅', '炉具', '灯具', '活动箱']
   },
   {
@@ -142,7 +147,7 @@ export const bbqPackages = [
     scene: '公司团建 / 户外活动',
     price: '看海报报价',
     longRent: '支持活动策划加配',
-    image: cloudAsset('package-15p.png'),
+    image: localAsset('package-15p.png'),
     features: ['多人装备', '场景搭建', '烧烤设备', '氛围照明']
   }
 ]
