@@ -25,7 +25,7 @@ export const brand = {
     developerName: '刘鼎聪',
     phone: '19217779594',
     email: 'ace.liu0502@gmail.com',
-    address: '广西南宁市良庆区良庆镇良兴路18号'
+    address: '广西壮族自治区南宁市邕宁区蒲庙镇良堤路中国锦园A1栋'
   }
 }
 
@@ -52,10 +52,8 @@ export const housekeepingRules = {
 
 export const pickupLocation = {
   title: '自提地址',
-  name: '暮山川 BBQ 装备自提点',
-  address: '南宁市良庆区瓦村路与良堤路交叉口正南方向85米左右',
-  latitude: 22.74096,
-  longitude: 108.44472,
+  name: '暮山川 BBQ 装备自提点（中国锦园A1栋）',
+  address: brand.contacts.address,
   tip: '自提前请先和客服确认档期、取装时间和归还方式。'
 }
 

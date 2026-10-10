@@ -20,6 +20,7 @@ import { useWechatLogin } from '../../composables/useWechatLogin.js'
 import { brand, profileGroups } from '../../data/campData.js'
 
 const capsuleSafeAreaStyle = useCapsuleSafeArea()
+const profileLogoSrc = '/static/logo-white.png'
 const logoSrc = useCloudImageUrl(() => brand.logos.white)
 const avatarFallbackRawSrc = brand.logos.mark
 const avatarFallbackSrc = useCloudImageUrl(() => avatarFallbackRawSrc)
@@ -255,18 +256,14 @@ function handleMenuTap(item) {
     <view class="status-space"></view>
 
     <view class="profile-card">
-      <view class="logo-orbit">
+      <view class="profile-brand">
         <image
-          class="logo-mark"
-          :src="logoSrc"
+          class="profile-brand-logo"
+          :src="profileLogoSrc"
           mode="aspectFit"
-          @load="
-            logMineImageEvent('logo-mark', brand.logos.white, logoSrc, $event)
-          "
-          @error="
-            logMineImageEvent('logo-mark', brand.logos.white, logoSrc, $event)
-          "
         />
+        <text class="profile-brand-name">{{ brand.name }}</text>
+        <text class="profile-brand-tagline">{{ brand.tagline }}</text>
       </view>
       <view
         class="profile-body"
@@ -354,7 +351,9 @@ function handleMenuTap(item) {
           />
           <text v-else class="profile-name">登录 / 注册</text>
           <text class="profile-subtitle">{{ profileSubtitle }}</text>
-          <text class="profile-warm-line">{{ profileWarmLine }}</text>
+          <text v-if="profileWarmLine" class="profile-warm-line">
+            {{ profileWarmLine }}
+          </text>
         </view>
 
         <view class="profile-action">
@@ -585,21 +584,32 @@ function handleMenuTap(item) {
   content: '';
 }
 
-.logo-orbit {
+.profile-brand {
   position: relative;
   z-index: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 320rpx;
-  overflow: hidden;
-  padding: 0;
+  gap: 12rpx;
+  padding: 20rpx 26rpx 16rpx;
 }
 
-.logo-mark {
-  width: 290rpx;
-  height: 290rpx;
-  opacity: 0.9;
+.profile-brand-logo {
+  flex: 0 0 auto;
+  width: 56rpx;
+  height: 56rpx;
+}
+
+.profile-brand-name {
+  color: #fff8ed;
+  font-size: 28rpx;
+  font-weight: 850;
+  line-height: 40rpx;
+}
+
+.profile-brand-tagline {
+  color: rgba(255, 248, 237, 0.68);
+  font-size: 21rpx;
+  line-height: 30rpx;
 }
 
 .profile-body {

@@ -36,42 +36,27 @@ function copyPickupAddress() {
     success: () => {
       showToast('地址已复制')
     },
-    fail: () => {
-      showToast('复制失败，请长按地址')
+    fail: error => {
+      console.error('[PickupLocationCard] setClipboardData failed', error)
+      showToast('复制未成功，请长按地址复制')
     }
   })
 }
 
-function openPickupLocation() {
-  if (!pickupLocation.latitude || !pickupLocation.longitude) {
-    copyPickupAddress()
-    return
-  }
-
-  uni.openLocation({
-    latitude: pickupLocation.latitude,
-    longitude: pickupLocation.longitude,
-    scale: 18,
-    name: pickupLocation.name,
-    address: pickupLocation.address,
-    fail: () => {
-      copyPickupAddress()
-      showToast('已复制地址，可手动导航')
-    }
-  })
-}
 </script>
 
 <template>
   <view class="pickup-card" :class="cardClasses">
-    <view class="pickup-main" @tap="openPickupLocation">
+    <view class="pickup-main">
       <view class="pickup-pin">
         <text>取</text>
       </view>
       <view class="pickup-copy">
         <text class="pickup-kicker">SELF PICKUP</text>
         <text class="pickup-title">{{ displayTitle }}</text>
-        <text class="pickup-address">{{ pickupLocation.address }}</text>
+        <text class="pickup-address" selectable user-select>
+          {{ pickupLocation.address }}
+        </text>
         <text v-if="!compact" class="pickup-tip">{{ pickupLocation.tip }}</text>
       </view>
     </view>
@@ -79,16 +64,9 @@ function openPickupLocation() {
       <button
         class="pickup-action pickup-action--ghost"
         hover-class="pickup-action--hover"
-        @tap.stop="copyPickupAddress"
+        @tap.stop="copyPickupAddress()"
       >
         复制
-      </button>
-      <button
-        class="pickup-action pickup-action--solid"
-        hover-class="pickup-action--hover"
-        @tap.stop="openPickupLocation"
-      >
-        导航
       </button>
     </view>
   </view>
@@ -247,22 +225,10 @@ function openPickupLocation() {
   color: #223d2d;
 }
 
-.pickup-action--solid {
-  background:
-    linear-gradient(180deg, #31513b, #223d2d),
-    #223d2d;
-  color: #fff8ed;
-}
-
 .pickup-card--dark .pickup-action--ghost {
   border-color: rgba(255, 248, 237, 0.24);
   background: rgba(255, 248, 237, 0.1);
   color: #fff8ed;
-}
-
-.pickup-card--dark .pickup-action--solid {
-  background: #fff8ed;
-  color: #223d2d;
 }
 
 .pickup-card--sage .pickup-action--ghost {
