@@ -1,4 +1,4 @@
-param([int]$PosterWidth = 1200, [int]$Quality = 85)
+param([int]$PosterWidth = 1200, [int]$Quality = 85, [string]$AssetName = '')
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 $projectRoot = Split-Path $PSScriptRoot -Parent
@@ -7,6 +7,7 @@ $jpegCodec = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where
 $sharedPosters = @('package-2p', 'package-4p', 'package-4p-mahjong', 'package-6p', 'housekeeping-rules')
 $report = @()
 foreach ($source in Get-ChildItem -LiteralPath $originalRoot -Filter '*.png' -Recurse -File) {
+    if ($AssetName -and $source.BaseName -ne $AssetName) { continue }
     $isLogo = $source.BaseName.StartsWith('logo-')
     $isIngredient = $source.Directory.Name -eq 'Ingredients'
     $widthLimit = if ($source.BaseName -eq 'logo-mark') { 192 } elseif ($isLogo) { 512 } elseif ($isIngredient) { 1000 } else { $PosterWidth }
@@ -41,6 +42,12 @@ foreach ($source in Get-ChildItem -LiteralPath $originalRoot -Filter '*.png' -Re
     $bitmap.Dispose()
     $original.Dispose()
 }
-$report | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $originalRoot 'compression-report.json') -Encoding utf8
+$reportPath = Join-Path $originalRoot 'compression-report.json'
+if ($AssetName -and (Test-Path -LiteralPath $reportPath)) {
+    $updatedFiles = @($report | ForEach-Object File)
+    $previousReport = @(Get-Content -LiteralPath $reportPath -Raw | ConvertFrom-Json)
+    $report = @($previousReport | Where-Object { $_.File -notin $updatedFiles }) + $report
+}
+$report | ConvertTo-Json | Set-Content -LiteralPath $reportPath -Encoding utf8
 $report | Format-Table -AutoSize
 $report | Group-Object { if ($_.File.StartsWith('pages/ingredients')) { 'ingredients' } elseif ($_.File.StartsWith('pages/packages')) { 'packages' } else { 'main' } } | ForEach-Object { [pscustomobject]@{Package=$_.Name; Bytes=($_.Group | Measure-Object Bytes -Sum).Sum} } | Format-Table
