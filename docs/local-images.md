@@ -19,6 +19,7 @@
 - `data/campData.js` 统一映射本地资源路径。
 - Logo 使用透明 PNG；设备海报使用 JPEG 品质 85，保持原有 1080 像素宽度（价目图原宽 1024）；交付卡最大宽 1200；食材图宽 1000、JPEG 品质 75；二维码保留原文件。
 - 每张海报的展示与放大预览共用同一张压缩本地图，避免在包内重复存储两套图片。
+- 图片点击放大统一经过 `composables/localImagePreview.js`：先读取本地图片信息，微信端再复制到用户文件目录的 `camp-preview-` 文件中供原生预览读取。列表和分享仍使用包内路径，不下载图片，不请求云服务；预览副本采用固定文件名，并在每次冷启动首次使用时重新复制，避免无限增长或显示旧海报。预览失败会提示重试并在控制台记录路径和错误。
 - 本次迁移原图保存在 `.asset-originals/`，含下载清单与压缩报告。此目录被 Git 忽略且不进入发行包，应单独备份。压缩后的正式图片纳入版本管理。
 - 若本机原图齐全，运行 `pwsh -File tools/compress-assets.ps1` 可重新生成。其他机器可直接使用仓库中的压缩图片构建，无需下载原图或访问云存储。
 - 替换单张图片时，先将新 PNG 原图备份到 `.asset-originals/` 对应位置，再运行 `pwsh -File tools/compress-assets.ps1 -AssetName housekeeping-rules`（名称不含扩展名）。正式资源目录只保留生成的压缩图片，避免同时打包原 PNG 导致超限；覆盖前应另行保留旧原图。
@@ -27,16 +28,21 @@
 
 ```powershell
 # 默认使用 D:/Program Files/HBuilderX；其他安装位置设置 HBUILDERX_PATH。
-node tools/build-weixin.mjs
-node --test tests/local-images.test.mjs tests/local-profile.test.mjs
-node tools/check-local-assets.mjs
+npm run build:mp-weixin
+npm test
+# 单独复查已生成的发行包：
+npm run check:assets
 ```
+
+项目使用 HBuilderX 自带的 Vue 3 编译器，`package.json` 仅提供命令入口，无需先执行 `npm install`。请使用 Node.js 20.11 或更高版本，并确认 HBuilderX 已安装 Vue 3 编译插件。`build:mp-weixin` 编译成功后会自动检查图片和分包体积；也可直接运行 `node tools/build-weixin.mjs`。HBuilderX 安装目录不同时，先在 PowerShell 中设置 `$env:HBUILDERX_PATH = '实际安装目录'`。
 
 也可在 HBuilderX 中发行微信小程序。输出目录为 `unpackage/dist/build/mp-weixin`。检查脚本核验全部图片、原路由、首页资源归属、应用代码中的后端/登录/网络调用残留、云构建配置和每包文件总大小。最终上传体积以微信开发者工具结果为准。
 
 2026-10-14 重新核验：`test` 分支的本地资源迁移与无云服务逻辑仍保存在 `80eb1eb`、`a911c12` 两个提交中。以 `main` 的 `57cb043` 为基准，16 个既有组件/页面的模板与样式保持一致；“我的”页面拆出的资料卡沿用了原有样式，保留的 58 组页面/资料卡样式属性一致。资料操作按本文改为本机保存。
 
 本次修复了新交付卡 PNG 与代码 JPG 路径不一致的问题，保留新图内容，生成 1086 × 1448、品质 85 的 JPG（405,814 字节），原图备份到 `.asset-originals/`。无后端发行构建通过：主包 1,563,986 字节（1.492 MiB），设备分包 824,935 字节（0.787 MiB），食材分包 1,903,240 字节（1.815 MiB）。9 项测试通过，覆盖分享图片、头像持久化、本机资料首次保存、旧缓存迁移、保存失败恢复和资料清除。22 张本地图片、7 个页面路由及无后端调用检查通过。后续包体与测试结果以运行上述命令后的输出为准。
+
+2026-10-14 图片预览修复后复核：18 项测试通过（包含主包/分包预览、多图切换、重复点击、失败重试），发行构建和 22 张图片检查通过。主包 1,565,556 字节（1.493 MiB），两个分包体积未变。此轮没有修改页面模板或样式。
 
 模拟器验证尚未完成：本机微信开发者工具关闭了服务端口，CLI 返回 `IDE service port disabled`。未更改该安全设置，也未上传或发布小程序。开启服务端口后，可安装官方测试库并运行已准备的模拟器脚本：
 

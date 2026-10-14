@@ -1,0 +1,14 @@
+{
+  "name": "mushanchuan-miniprogram",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:mp-weixin": "node tools/build-weixin.mjs && node tools/check-local-assets.mjs",
+    "check:assets": "node tools/check-local-assets.mjs",
+    "test": "node --test tests/local-images.test.mjs tests/local-profile.test.mjs tests/local-image-preview.test.mjs"
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  }
+}

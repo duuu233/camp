@@ -1,5 +1,8 @@
 import { computed, onMounted, shallowRef } from 'vue'
 import { normalizeLocalImage } from './localImage.js'
+import { createLocalImagePreview } from './localImagePreview.js'
+
+let previewLocalImage
 
 const capsuleFallbackStyle = {
   '--status-bar-height': '88rpx',
@@ -36,19 +39,21 @@ export function useImageUrl(source) {
 }
 
 export function previewImageUrl(current, urls) {
-  const currentUrl = readSource(current)
-  const previewUrls = (Array.isArray(urls) ? urls : [current])
-    .map(url => readSource(url))
-    .filter(Boolean)
-
-  if (!currentUrl || !previewUrls.length || typeof uni === 'undefined') {
-    return
+  if (typeof uni === 'undefined') return
+  if (!previewLocalImage) {
+    const options = {}
+    // #ifdef MP-WEIXIN
+    if (typeof wx !== 'undefined' && wx.getFileSystemManager && wx.env?.USER_DATA_PATH) {
+      options.fileSystem = wx.getFileSystemManager()
+      options.userDirectory = wx.env.USER_DATA_PATH
+    }
+    // #endif
+    previewLocalImage = createLocalImagePreview(uni, options)
   }
-
-  uni.previewImage({
-    current: currentUrl,
-    urls: previewUrls
-  })
+  return previewLocalImage(
+    readSource(current),
+    Array.isArray(urls) ? urls.map(readSource) : undefined
+  )
 }
 
 function readCapsuleStyle() {
