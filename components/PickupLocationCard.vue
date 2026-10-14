@@ -84,6 +84,7 @@ function openPickupLocation() {
         复制
       </button>
       <button
+        v-if="pickupLocation.latitude && pickupLocation.longitude"
         class="pickup-action pickup-action--solid"
         hover-class="pickup-action--hover"
         @tap.stop="openPickupLocation"
